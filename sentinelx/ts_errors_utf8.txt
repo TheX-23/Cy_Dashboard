@@ -1,0 +1,131 @@
+﻿src/components/settings/preferences.tsx(216,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { notifications: { desktop: boolean; sound?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { notifications: { desktop: boolean; sound?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ notifications: { desktop: boolean; sound?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; timezone?: string | undefined; dateFormat?: string | undefined; timeFormat?: "24h" | ... 1 more ... | undefined; dashboard?: { ...; } | undef...' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'notifications.sound' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/preferences.tsx(231,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { notifications: { sound: boolean; desktop?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { notifications: { sound: boolean; desktop?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ notifications: { sound: boolean; desktop?: boolean | undefined; email?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; timezone?: string | undefined; dateFormat?: string | undefined; timeFormat?: "24h" | ... 1 more ... | undefined; dashboard?: { ...; } | undef...' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'notifications.desktop' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/preferences.tsx(246,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { notifications: { email: boolean; desktop?: boolean | undefined; sound?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { notifications: { email: boolean; desktop?: boolean | undefined; sound?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ notifications: { email: boolean; desktop?: boolean | undefined; sound?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; timezone?: string | undefined; dateFormat?: string | undefined; timeFormat?: "24h" | ... 1 more ... | undefined; dashboard?: { ...; } | undef...' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'notifications.desktop' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/preferences.tsx(305,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { dashboard: { defaultTab: string; refreshInterval?: number | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { dashboard: { defaultTab: string; refreshInterval?: number | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ dashboard: { defaultTab: string; refreshInterval?: number | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; ... 4 more ...; accessibility?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'dashboard.refreshInterval' are incompatible between these types.
+        Type 'number | undefined' is not assignable to type 'number'.
+          Type 'undefined' is not assignable to type 'number'.
+src/components/settings/preferences.tsx(323,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { dashboard: { refreshInterval: number; defaultTab?: string | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { dashboard: { refreshInterval: number; defaultTab?: string | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ dashboard: { refreshInterval: number; defaultTab?: string | undefined; compactMode?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; ... 4 more ...; accessibility?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'dashboard.defaultTab' are incompatible between these types.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/components/settings/preferences.tsx(342,55): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { dashboard: { compactMode: boolean; defaultTab?: string | undefined; refreshInterval?: number | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { dashboard: { compactMode: boolean; defaultTab?: string | undefined; refreshInterval?: number | undefined; }; theme?: "auto" | ... 2 more ... | undefined; ... 5 more ...; accessibility?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ dashboard: { compactMode: boolean; defaultTab?: string | undefined; refreshInterval?: number | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; ... 4 more ...; accessibility?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'dashboard.defaultTab' are incompatible between these types.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/components/settings/preferences.tsx(382,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { accessibility: { fontSize: "medium" | "small" | "large"; highContrast?: boolean | undefined; reducedMotion?: boolean | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { accessibility: { fontSize: "medium" | "small" | "large"; highContrast?: boolean | undefined; reducedMotion?: boolean | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ accessibility: { fontSize: "medium" | "small" | "large"; highContrast?: boolean | undefined; reducedMotion?: boolean | undefined; }; theme?: "auto" | "dark" | "light" | undefined; ... 5 more ...; dashboard?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'accessibility.highContrast' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/preferences.tsx(404,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { accessibility: { highContrast: boolean; reducedMotion?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { accessibility: { highContrast: boolean; reducedMotion?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ accessibility: { highContrast: boolean; reducedMotion?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; ... 4 more ...; dashboard?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'accessibility.reducedMotion' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/preferences.tsx(419,57): error TS2345: Argument of type '(prev: Partial<UserPreferences>) => { accessibility: { reducedMotion: boolean; highContrast?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<Partial<UserPreferences>>'.
+  Type '(prev: Partial<UserPreferences>) => { accessibility: { reducedMotion: boolean; highContrast?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; ... 6 more ...; dashboard?: { ...; } | undefined; }' is not assignable to type '(prevState: Partial<UserPreferences>) => Partial<UserPreferences>'.
+    Call signature return types '{ accessibility: { reducedMotion: boolean; highContrast?: boolean | undefined; fontSize?: "medium" | "small" | "large" | undefined; }; theme?: "auto" | "dark" | "light" | undefined; language?: string | undefined; ... 4 more ...; dashboard?: { ...; } | undefined; }' and 'Partial<UserPreferences>' are incompatible.
+      The types of 'accessibility.highContrast' are incompatible between these types.
+        Type 'boolean | undefined' is not assignable to type 'boolean'.
+          Type 'undefined' is not assignable to type 'boolean'.
+src/components/settings/security-settings.tsx(5,10): error TS2865: Import 'SecuritySettings' conflicts with local value, so must be declared with a type-only import when 'isolatedModules' is enabled.
+src/components/sidebar/Sidebar.tsx(101,7): error TS2322: Type '{ width: number; transition: { duration: number; ease: [number, number]; }; }' is not assignable to type 'boolean | TargetAndTransition | VariantLabels | LegacyAnimationControls | undefined'.
+  Types of property 'transition' are incompatible.
+    Type '{ duration: number; ease: [number, number]; }' is not assignable to type 'Transition<any> | undefined'.
+      Types of property 'ease' are incompatible.
+        Type '[number, number]' is not assignable to type 'Easing | Easing[] | undefined'.
+          Type '[number, number]' is not assignable to type 'EasingFunction | Easing[]'.
+            Type '[number, number]' is not assignable to type 'Easing[]'.
+              Type 'number' is not assignable to type 'Easing'.
+src/hooks/use-dashboard.ts(188,25): error TS2339: Property 'type' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(191,25): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(194,48): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(202,48): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(204,29): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(206,32): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(207,35): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(208,33): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(209,36): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(210,36): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(212,32): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(215,48): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(226,25): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(239,25): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(241,80): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(251,38): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(253,39): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(262,25): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(273,29): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(275,32): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(276,35): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(277,33): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(278,36): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(280,32): error TS2339: Property 'action' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(294,37): error TS2339: Property 'data' does not exist on type 'never'.
+src/hooks/use-dashboard.ts(306,11): error TS2304: Cannot find name 'apiClient'.
+src/hooks/use-dashboard.ts(307,11): error TS2304: Cannot find name 'apiClient'.
+src/hooks/use-dashboard.ts(334,11): error TS2304: Cannot find name 'apiClient'.
+src/hooks/use-dashboard.ts(335,11): error TS2304: Cannot find name 'apiClient'.
+src/hooks/use-detection.ts(295,17): error TS2345: Argument of type '(prev: DetectionEvent[]) => DetectionEvent[]' is not assignable to parameter of type 'SetStateAction<DetectionEvent[]>'.
+  Type '(prev: DetectionEvent[]) => DetectionEvent[]' is not assignable to type '(prevState: DetectionEvent[]) => DetectionEvent[]'.
+    Type 'DetectionEvent[]' is not assignable to type 'import("D:/sentinelX-main/sentinelx/src/types/detection").DetectionEvent[]'.
+      Type 'DetectionEvent' is not assignable to type 'import("D:/sentinelX-main/sentinelx/src/types/detection").DetectionEvent'.
+        Types of property 'severity' are incompatible.
+          Type 'string' is not assignable to type 'DetectionSeverity'.
+src/hooks/use-incidents.ts(71,3): error TS2322: Type '{ id: string; title: string; description: string; severity: IncidentSeverity; status: IncidentStatus; impact: IncidentImpact; createdAt: Date; ... 14 more ...; evidence: never[]; }[]' is not assignable to type 'Incident[]'.
+  Type '{ id: string; title: string; description: string; severity: IncidentSeverity; status: IncidentStatus; impact: IncidentImpact; createdAt: Date; ... 14 more ...; evidence: never[]; }' is not assignable to type 'Incident'.
+    Types of property 'affectedAssets' are incompatible.
+      Type '{ id: string; name: string; type: string; ip: string; location: string; }[]' is not assignable to type '{ id: string; name: string; type: "user" | "server" | "application" | "network" | "database"; ip?: string | undefined; location?: string | undefined; }[]'.
+        Type '{ id: string; name: string; type: string; ip: string; location: string; }' is not assignable to type '{ id: string; name: string; type: "user" | "server" | "application" | "network" | "database"; ip?: string | undefined; location?: string | undefined; }'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type '"user" | "server" | "application" | "network" | "database"'.
+src/hooks/use-incidents.ts(223,40): error TS2339: Property 'getTime' does not exist on type 'number'.
+src/hooks/use-incidents.ts(261,16): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number; }'.
+src/hooks/use-incidents.ts(261,44): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number; }'.
+src/hooks/use-incidents.ts(287,68): error TS2339: Property 'length' does not exist on type 'number'.
+src/hooks/use-incidents.ts(298,7): error TS2322: Type '{ severity: string; count: number; }[]' is not assignable to type '{ severity: IncidentSeverity; count: number; }[]'.
+  Type '{ severity: string; count: number; }' is not assignable to type '{ severity: IncidentSeverity; count: number; }'.
+    Types of property 'severity' are incompatible.
+      Type 'string' is not assignable to type 'IncidentSeverity'.
+src/hooks/use-incidents.ts(299,7): error TS2322: Type '{ status: string; count: number; }[]' is not assignable to type '{ status: IncidentStatus; count: number; }[]'.
+  Type '{ status: string; count: number; }' is not assignable to type '{ status: IncidentStatus; count: number; }'.
+    Types of property 'status' are incompatible.
+      Type 'string' is not assignable to type 'IncidentStatus'.
+src/hooks/use-settings.ts(282,9): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/use-soar.ts(295,15): error TS2322: Type '"track_ip_activity"' is not assignable to type 'ActionType'.
+src/hooks/use-supabase-auth-simple.tsx(4,10): error TS2305: Module '"@supabase/auth-helpers-nextjs"' has no exported member 'createClientComponentClient'.
+src/hooks/use-supabase-auth-simple.tsx(4,39): error TS2305: Module '"@supabase/auth-helpers-nextjs"' has no exported member 'SupabaseClient'.
+src/hooks/use-supabase-auth-v2.tsx(4,10): error TS2305: Module '"@supabase/auth-helpers-nextjs"' has no exported member 'createClientComponentClient'.
+src/hooks/use-supabase-auth-v2.tsx(62,42): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/hooks/use-supabase-auth-v2.tsx(62,49): error TS7006: Parameter 'session' implicitly has an 'any' type.
+src/hooks/use-supabase-auth.tsx(4,10): error TS2305: Module '"@supabase/auth-helpers-nextjs"' has no exported member 'createClientComponentClient'.
+src/hooks/use-supabase-auth.tsx(4,39): error TS2305: Module '"@supabase/auth-helpers-nextjs"' has no exported member 'SupabaseClient'.
+src/hooks/use-supabase-auth.tsx(6,26): error TS2307: Cannot find module '@/types/database' or its corresponding type declarations.
+src/hooks/use-supabase-auth.tsx(63,42): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/hooks/use-supabase-auth.tsx(63,49): error TS7006: Parameter 'session' implicitly has an 'any' type.

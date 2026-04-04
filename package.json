@@ -1,0 +1,35 @@
+{
+  "name": "sentinelx-fullstack",
+  "version": "1.0.0",
+  "description": "SentinelX Cybersecurity Platform - Full Stack Development",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && python run.py",
+    "dev:frontend": "cd sentinelx && npm run dev",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && python -m venv venv && venv\\Scripts\\activate && pip install -r requirements.txt",
+    "install:frontend": "cd sentinelx && npm install",
+    "start": "npm run dev",
+    "build": "cd sentinelx && npm run build",
+    "build:vercel": "cd sentinelx && npm run build",
+    "deploy:vercel": "cd sentinelx && vercel --prod",
+    "preview": "cd sentinelx && npm run start",
+    "clean": "cd sentinelx && rm -rf node_modules && cd ../backend && rm -rf venv"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "cybersecurity",
+    "sentinelx",
+    "threat-detection",
+    "soc",
+    "dashboard"
+  ],
+  "author": "SentinelX Team",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

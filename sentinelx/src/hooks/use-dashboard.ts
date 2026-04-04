@@ -1,0 +1,346 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { useWebSocket } from './use-websocket';
+
+// Mock data for development
+const USE_MOCK_DATA = true;
+
+interface DashboardStats {
+  total_alerts: number;
+  critical_alerts: number;
+  high_alerts: number;
+  medium_alerts: number;
+  low_alerts: number;
+  total_incidents: number;
+  open_incidents: number;
+  resolved_incidents: number;
+  total_detections: number;
+  threats_blocked: number;
+  uptime: number;
+}
+
+interface AlertTrend {
+  date: string;
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
+}
+
+interface ThreatMap {
+  country: string;
+  threats: number;
+  severity: string;
+}
+
+interface ActivityFeed {
+  id: string;
+  type: 'alert' | 'incident';
+  title: string;
+  severity: string;
+  status: string;
+  timestamp: string;
+  source_ip?: string;
+}
+
+export function useDashboard() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [trends, setTrends] = useState<AlertTrend[]>([]);
+  const [threatMap, setThreatMap] = useState<ThreatMap[]>([]);
+  const [activityFeed, setActivityFeed] = useState<ActivityFeed[]>([]);
+  const [recentAlerts, setRecentAlerts] = useState<any[]>([]);
+  const [systemHealth, setSystemHealth] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Disable WebSocket for mock data
+const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
+
+  // Fetch initial dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        if (USE_MOCK_DATA) {
+          // Mock data for development
+          const mockStats = {
+            total_alerts: 1247,
+            critical_alerts: 23,
+            high_alerts: 156,
+            medium_alerts: 412,
+            low_alerts: 656,
+            total_incidents: 89,
+            open_incidents: 34,
+            resolved_incidents: 55,
+            total_detections: 5432,
+            threats_blocked: 1876,
+            uptime: 99.8,
+          };
+
+          const mockTrends = [
+            { date: '2024-03-27', critical: 18, high: 142, medium: 389, low: 621 },
+            { date: '2024-03-28', critical: 22, high: 158, medium: 401, low: 643 },
+            { date: '2024-03-29', critical: 19, high: 149, medium: 395, low: 632 },
+            { date: '2024-03-30', critical: 25, high: 167, medium: 418, low: 667 },
+            { date: '2024-03-31', critical: 21, high: 153, medium: 407, low: 649 },
+            { date: '2024-04-01', critical: 23, high: 156, medium: 412, low: 656 },
+            { date: '2024-04-02', critical: 23, high: 156, medium: 412, low: 656 },
+          ];
+
+          const mockThreatMap = [
+            { country: 'United States', threats: 342, severity: 'high' },
+            { country: 'China', threats: 287, severity: 'high' },
+            { country: 'Russia', threats: 198, severity: 'medium' },
+            { country: 'Brazil', threats: 156, severity: 'medium' },
+            { country: 'India', threats: 134, severity: 'low' },
+            { country: 'Germany', threats: 98, severity: 'low' },
+            { country: 'United Kingdom', threats: 87, severity: 'low' },
+            { country: 'France', threats: 76, severity: 'low' },
+          ];
+
+          const mockActivityFeed: ActivityFeed[] = [
+            { id: '1', type: 'alert', title: 'Suspicious login attempt detected', severity: 'high', status: 'investigating', timestamp: '2024-04-02T10:30:00Z' },
+            { id: '2', type: 'incident', title: 'Malware signature identified', severity: 'critical', status: 'mitigated', timestamp: '2024-04-02T10:25:00Z' },
+            { id: '3', type: 'alert', title: 'Automated response initiated', severity: 'medium', status: 'resolved', timestamp: '2024-04-02T10:20:00Z' },
+            { id: '4', type: 'incident', title: 'Unusual network traffic pattern', severity: 'medium', status: 'monitoring', timestamp: '2024-04-02T10:15:00Z' },
+            { id: '5', type: 'alert', title: 'Phishing attempt blocked', severity: 'high', status: 'mitigated', timestamp: '2024-04-02T10:10:00Z' },
+          ];
+
+          const mockRecentAlerts = [
+            { id: 1, title: 'Critical SQL Injection Attempt', severity: 'critical', status: 'open', timestamp: '2024-04-02T10:30:00Z', source: 'Web Application Firewall' },
+            { id: 2, title: 'Suspicious File Upload', severity: 'high', status: 'investigating', timestamp: '2024-04-02T10:25:00Z', source: 'File Scanner' },
+            { id: 3, title: 'Brute Force Attack Detected', severity: 'high', status: 'mitigated', timestamp: '2024-04-02T10:20:00Z', source: 'Authentication System' },
+            { id: 4, title: 'Unusual API Usage Pattern', severity: 'medium', status: 'monitoring', timestamp: '2024-04-02T10:15:00Z', source: 'API Gateway' },
+            { id: 5, title: 'Potential Data Exfiltration', severity: 'critical', status: 'investigating', timestamp: '2024-04-02T10:10:00Z', source: 'Data Loss Prevention' },
+          ];
+
+          const mockSystemHealth = {
+            cpu_usage: 45.2,
+            memory_usage: 67.8,
+            disk_usage: 23.4,
+            network_latency: 12,
+            active_connections: 1247,
+            services_status: {
+              detection_engine: 'healthy',
+              soar_engine: 'healthy',
+              database: 'healthy',
+              redis: 'disabled',
+            },
+          };
+
+          setStats(mockStats);
+          setTrends(mockTrends);
+          setThreatMap(mockThreatMap);
+          setActivityFeed(mockActivityFeed);
+          setRecentAlerts(mockRecentAlerts);
+          setSystemHealth(mockSystemHealth);
+        } else {
+          // Original API calls (commented out for now)
+          /*
+          const [
+            statsData,
+            trendsData,
+            threatMapData,
+            activityData,
+            recentAlertsData,
+            healthData,
+          ] = await Promise.all([
+            apiClient.getDashboardStats(),
+            apiClient.getAlertTrends(7),
+            apiClient.getThreatMap(),
+            apiClient.getActivityFeed(20),
+            apiClient.getRecentAlerts(10),
+            apiClient.getSystemHealth(),
+          ]);
+
+          setStats(statsData);
+          setTrends(trendsData);
+          setThreatMap(threatMapData);
+          setActivityFeed(activityData);
+          setRecentAlerts(recentAlertsData);
+          setSystemHealth(healthData);
+          */
+        }
+
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
+        console.error('Dashboard data fetch error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // WebSocket handling disabled for mock data
+  useEffect(() => {
+    // No WebSocket updates when using mock data
+  }, []);
+
+  // Handle real-time WebSocket updates
+  useEffect(() => {
+    if (!lastMessage || !isConnected) return;
+
+    switch (lastMessage.type) {
+      case 'alerts:update':
+        // Update stats and recent alerts when alerts are updated
+        if (lastMessage.action === 'created') {
+          setStats(prev => {
+            if (!prev) return prev;
+            const severityKey = `${lastMessage.data.severity}_alerts` as keyof DashboardStats;
+            return {
+              ...prev,
+              total_alerts: prev.total_alerts + 1,
+              [severityKey]: (prev[severityKey] || 0) + 1
+            };
+          });
+          
+          setRecentAlerts(prev => [lastMessage.data, ...prev.slice(0, 9)]);
+          setActivityFeed(prev => [{
+            id: lastMessage.data.id,
+            type: 'alert',
+            title: lastMessage.data.title,
+            severity: lastMessage.data.severity,
+            status: lastMessage.data.status,
+            timestamp: lastMessage.data.created_at,
+            source_ip: lastMessage.data.source_ip
+          }, ...prev.slice(0, 19)]);
+        } else if (lastMessage.action === 'resolved') {
+          setStats(prev => {
+            if (!prev) return prev;
+            const severityKey = `${lastMessage.data.severity}_alerts` as keyof DashboardStats;
+            return {
+              ...prev,
+              [severityKey]: Math.max(0, (prev[severityKey] || 0) - 1)
+            };
+          });
+        }
+        break;
+
+      case 'logs:update':
+        // Update detection stats when logs are processed
+        if (lastMessage.action === 'processed') {
+          setStats(prev => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              total_detections: prev.total_detections + 1
+            };
+          });
+        }
+        break;
+
+      case 'threats:update':
+        // Update threat map when threat intel is updated
+        if (lastMessage.action === 'added') {
+          setThreatMap(prev => {
+            const countryIndex = prev.findIndex(t => t.country === lastMessage.data.country);
+            if (countryIndex >= 0) {
+              const updated = [...prev];
+              updated[countryIndex] = {
+                ...updated[countryIndex],
+                threats: updated[countryIndex].threats + 1
+              };
+              return updated;
+            } else {
+              return [...prev, {
+                country: lastMessage.data.country,
+                threats: 1,
+                severity: lastMessage.data.severity
+              }];
+            }
+          });
+        }
+        break;
+
+      case 'incidents:update':
+        // Update incident stats
+        if (lastMessage.action === 'created') {
+          setStats(prev => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              total_incidents: prev.total_incidents + 1,
+              open_incidents: prev.open_incidents + 1
+            };
+          });
+          
+          setActivityFeed(prev => [{
+            id: lastMessage.data.id,
+            type: 'incident',
+            title: lastMessage.data.title,
+            severity: lastMessage.data.severity,
+            status: lastMessage.data.status,
+            timestamp: lastMessage.data.created_at
+          }, ...prev.slice(0, 19)]);
+        } else if (lastMessage.action === 'resolved') {
+          setStats(prev => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              open_incidents: Math.max(0, prev.open_incidents - 1),
+              resolved_incidents: prev.resolved_incidents + 1
+            };
+          });
+        }
+        break;
+
+      case 'system:health':
+        // Update system health
+        setSystemHealth(lastMessage.data);
+        break;
+    }
+  }, [lastMessage, isConnected]);
+
+  // Refresh data periodically
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const [statsData, healthData] = await Promise.all([
+          apiClient.getDashboardStats(),
+          apiClient.getSystemHealth(),
+        ]);
+        
+        setStats(statsData);
+        setSystemHealth(healthData);
+      } catch (err) {
+        console.error('Periodic refresh error:', err);
+      }
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [isConnected]);
+
+  return {
+    stats,
+    trends,
+    threatMap,
+    activityFeed,
+    recentAlerts,
+    systemHealth,
+    isLoading,
+    error,
+    isConnected,
+    refresh: async () => {
+      try {
+        setIsLoading(true);
+        const [statsData, healthData] = await Promise.all([
+          apiClient.getDashboardStats(),
+          apiClient.getSystemHealth(),
+        ]);
+        setStats(statsData);
+        setSystemHealth(healthData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to refresh data');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  };
+}
