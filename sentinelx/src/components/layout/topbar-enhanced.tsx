@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Bell, User, Settings, Wifi, WifiOff, Activity, AlertTriangle, Shield, LogOut, UserCircle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useTheme } from '@/context/ThemeContext';
@@ -103,6 +103,8 @@ export function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
     return 'text-green-400';
   };
 
+  const formatPercent = (value: number) => `${value.toFixed(1)}%`;
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'critical': return <AlertTriangle className="h-4 w-4" />;
@@ -156,25 +158,25 @@ export function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
         </div>
 
         {/* Center Section - System Status */}
-        <div className="hidden min-w-0 shrink-0 items-center gap-4 lg:flex xl:gap-6">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">CPU:</span>
-            <span className={cn("text-sm font-medium", getStatusColor(systemStatus.cpu))}>
-              {systemStatus.cpu}%
+        <div className="hidden min-w-0 shrink-0 items-center gap-2 lg:flex">
+          <div className="rounded-md border border-border bg-card/70 px-2.5 py-1.5">
+            <span className="text-[11px] text-muted-foreground">CPU </span>
+            <span className={cn("font-mono text-sm font-semibold tabular-nums", getStatusColor(systemStatus.cpu))}>
+              {formatPercent(systemStatus.cpu)}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Memory:</span>
-            <span className={cn("text-sm font-medium", getStatusColor(systemStatus.memory))}>
-              {systemStatus.memory}%
+
+          <div className="rounded-md border border-border bg-card/70 px-2.5 py-1.5">
+            <span className="text-[11px] text-muted-foreground">MEM </span>
+            <span className={cn("font-mono text-sm font-semibold tabular-nums", getStatusColor(systemStatus.memory))}>
+              {formatPercent(systemStatus.memory)}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Network:</span>
-            <span className={cn("text-sm font-medium", getStatusColor(systemStatus.network))}>
-              {systemStatus.network}%
+
+          <div className="rounded-md border border-border bg-card/70 px-2.5 py-1.5">
+            <span className="text-[11px] text-muted-foreground">NET </span>
+            <span className={cn("font-mono text-sm font-semibold tabular-nums", getStatusColor(systemStatus.network))}>
+              {formatPercent(systemStatus.network)}
             </span>
           </div>
         </div>
@@ -294,28 +296,21 @@ export function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
       </div>
 
       {/* Quick Status Bar */}
-      <div
-        className={cn(
-          "border-t px-4 py-2 sm:px-6",
-          isDarkMode ? "border-border bg-card/30" : "border-gray-200 bg-gray-50/80",
-        )}
-      >
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs">
-          <div className="flex items-center gap-2">
+      <div className={cn("border-t px-4 py-2 sm:px-6", isDarkMode ? "border-border bg-card/30" : "border-gray-200 bg-gray-50/80")}>
+        <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+          <div className="inline-flex items-center gap-2 rounded-md border border-green-500/30 bg-green-500/10 px-2.5 py-1 text-green-700 dark:text-green-300">
             <div className="h-2 w-2 animate-pulse rounded-full bg-green-500 dark:bg-green-400" />
-            <span className="font-medium text-green-700 dark:text-green-400">
-              Detection Engine: Active
-            </span>
+            <span className="font-medium">Detection Active</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Threat Level:</span>
-            <span className="font-medium text-amber-600 dark:text-yellow-400">Elevated</span>
+          <div className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2.5 py-1">
+            <span className="text-muted-foreground">Threat</span>
+            <span className="font-medium text-amber-600 dark:text-yellow-300">Elevated</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Active Incidents:</span>
-            <span className="font-medium text-red-600 dark:text-red-400">3</span>
+          <div className="inline-flex items-center gap-1 rounded-md border border-red-500/30 bg-red-500/10 px-2.5 py-1">
+            <span className="text-muted-foreground">Incidents</span>
+            <span className="font-medium text-red-600 dark:text-red-300">3</span>
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ export const ThreatTrendChart: React.FC<ThreatTrendChartProps> = ({ data }) => {
   // Defensive check for data
   if (!data || !Array.isArray(data) || data.length === 0) {
     return (
-      <ChartContainer height="100%" className="h-full min-h-[200px]">
+      <ChartContainer height="300px" className="min-h-[200px]">
         <div className="flex h-full items-center justify-center text-muted-foreground">
           No trend data available
         </div>
@@ -30,11 +30,12 @@ export const ThreatTrendChart: React.FC<ThreatTrendChartProps> = ({ data }) => {
   }
 
   return (
-    <ChartContainer height="100%" className="h-full min-h-[240px]">
+    <ChartContainer height="300px" className="min-h-[240px]">
       <ResponsiveContainer
         width="100%"
-        height="100%"
+        height={300}
         minWidth={0}
+        initialDimension={{ width: 400, height: 300 }}
         debounce={50}
       >
         <LineChart data={data}>

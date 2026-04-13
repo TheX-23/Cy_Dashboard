@@ -4,7 +4,7 @@
   "description": "SentinelX Cybersecurity Platform - Full Stack Development",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "cd backend && python run.py",
+    "dev:backend": "cd backend && (venv\\Scripts\\python run.py || python run.py)",
     "dev:frontend": "cd sentinelx && npm run dev",
     "install:all": "npm run install:backend && npm run install:frontend",
     "install:backend": "cd backend && python -m venv venv && venv\\Scripts\\activate && pip install -r requirements.txt",

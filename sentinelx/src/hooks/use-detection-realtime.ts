@@ -167,13 +167,14 @@ export function useDetectionRealtime() {
     setConnectionStatus('connecting');
     
     // Connect to threats WebSocket
-    const threatsWS = connectWebSocket(`${process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000'}/ws/threats`, handleThreatMessage);
+    const wsBase = (process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8080/ws').replace(/\/ws\/?$/, '');
+    const threatsWS = connectWebSocket(`${wsBase}/ws/threats`, handleThreatMessage);
     if (threatsWS) {
       threatsWSRef.current = threatsWS;
     }
 
     // Connect to alerts WebSocket
-    const alertsWS = connectWebSocket(`${process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000'}/ws/alerts`, handleAlertMessage);
+    const alertsWS = connectWebSocket(`${wsBase}/ws/alerts`, handleAlertMessage);
     if (alertsWS) {
       alertsWSRef.current = alertsWS;
     }

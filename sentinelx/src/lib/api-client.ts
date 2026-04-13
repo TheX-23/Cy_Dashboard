@@ -1,5 +1,6 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws';
+// Same-origin default: proxied by Next rewrites to the FastAPI backend (avoids CORS in dev).
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8080/ws";
 
 interface ApiResponse<T = any> {
   data?: T;
@@ -27,30 +28,52 @@ interface User {
   avatar?: string;
 }
 
+type ApiRequestInit = RequestInit & { skipAuth?: boolean };
+
 class ApiClient {
-  private getAuthHeaders(): Record<string, string> {
-    const token = localStorage.getItem('auth_token');
-    return {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
+  /**
+   * Avoid Content-Type on GET/HEAD/DELETE to reduce CORS preflight when calling cross-origin.
+   * @param includeAuth set false for public routes so cross-origin GETs stay "simple" (no preflight).
+   */
+  private buildHeaders(method: string, includeAuth = true): Record<string, string> {
+    const token = localStorage.getItem("auth_token");
+    const headers: Record<string, string> = {};
+    const m = method.toUpperCase();
+    if (["POST", "PUT", "PATCH"].includes(m)) {
+      headers["Content-Type"] = "application/json";
+    }
+    if (token && includeAuth) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    return headers;
   }
 
   async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: ApiRequestInit = {}
   ): Promise<T> {
+    const { skipAuth, ...rest } = options;
+    const method = (rest.method || "GET").toString();
     const url = `${API_BASE_URL}${endpoint}`;
-    const config = {
-      headers: this.getAuthHeaders(),
-      ...options,
+    const config: RequestInit = {
+      ...rest,
+      headers: {
+        ...this.buildHeaders(method, !skipAuth),
+        ...(rest.headers as Record<string, string> | undefined),
+      },
     };
 
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      const error: ApiResponse = await response.json();
-      throw new Error(error.detail || error.message || 'Request failed');
+      let message = `Request failed (${response.status})`;
+      try {
+        const error: ApiResponse = await response.json();
+        message = error.detail || error.message || message;
+      } catch {
+        /* non-JSON body (e.g. proxy 502 HTML) */
+      }
+      throw new Error(message);
     }
 
     return response.json();
@@ -104,8 +127,12 @@ class ApiClient {
     return this.get(`/dashboard/alert-trends?days=${days}`);
   }
 
+  /** Public endpoint (no auth on server); omit Authorization to avoid CORS preflight on direct :8080 calls. */
   async getThreatMap() {
-    return this.get('/dashboard/threat-map');
+    return this.request("/dashboard/threat-map", {
+      method: "GET",
+      skipAuth: true,
+    });
   }
 
   async getRecentAlerts(limit: number = 10) {

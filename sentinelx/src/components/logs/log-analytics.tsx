@@ -101,7 +101,7 @@ export function LogAnalytics({ analytics }: LogAnalyticsProps) {
       <div className="glass rounded-xl border border-slate-800/60 p-4 lg:col-span-2 h-[250px]">
         <h3 className="text-sm font-semibold text-slate-100 mb-4">Logs Per Minute</h3>
         <div className="h-[150px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 150 }} debounce={50}>
             <LineChart data={analytics.logsPerMinute}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
               <XAxis 
@@ -135,7 +135,7 @@ export function LogAnalytics({ analytics }: LogAnalyticsProps) {
       <div className="glass rounded-xl border border-slate-800/60 p-4 h-[250px]">
         <h3 className="text-sm font-semibold text-slate-100 mb-4">Top Sources</h3>
         <div className="h-[150px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 150 }} debounce={50}>
             <BarChart data={analytics.topSources} layout="horizontal">
               <XAxis type="number" stroke="#64748b" fontSize={10} tick={{ fill: '#64748b' }} />
               <YAxis 
@@ -157,7 +157,7 @@ export function LogAnalytics({ analytics }: LogAnalyticsProps) {
       <div className="glass rounded-xl border border-slate-800/60 p-4 h-[250px]">
         <h3 className="text-sm font-semibold text-slate-100 mb-4">Event Distribution</h3>
         <div className="h-[150px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 150 }} debounce={50}>
             <PieChart>
               <Pie
                 data={analytics.eventDistribution}

@@ -110,18 +110,18 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
           </div>
         </div>
 
-        {/* Resolved Alerts — critical FAB sits above this card, overlapping the top edge */}
-        <div className="relative overflow-visible pt-5">
+        {/* Resolved Alerts with anchored critical indicator */}
+        <div className="relative overflow-visible">
           {analytics.criticalAlerts > 0 && (
             <div
-              className="absolute left-1/2 -top-2 z-20 -translate-x-1/2 -translate-y-1/2 sm:-top-3"
+              className="absolute right-3 top-3 z-20 sm:right-4 sm:top-4"
               role="status"
               aria-live="polite"
               title={`${analytics.criticalAlerts} critical alert${analytics.criticalAlerts > 1 ? 's' : ''}`}
             >
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-400/80 bg-red-500 text-white shadow-[0_8px_24px_rgba(239,68,68,0.45)] transition-transform duration-200 neon-pulse hover:scale-105 sm:h-14 sm:w-14">
-                <Bell className="h-5 w-5 shrink-0 sm:h-6 sm:w-6" aria-hidden />
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold tabular-nums text-red-600 ring-2 ring-red-500 sm:h-6 sm:min-w-[1.5rem] sm:text-xs">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-red-400/70 bg-red-500/90 text-white shadow-[0_8px_20px_rgba(239,68,68,0.35)] transition-transform duration-200 neon-pulse hover:scale-105 sm:h-11 sm:w-11">
+                <Bell className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" aria-hidden />
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold tabular-nums text-red-600 ring-2 ring-red-500 sm:h-5 sm:min-w-[1.25rem]">
                   {analytics.criticalAlerts > 99 ? '99+' : analytics.criticalAlerts}
                 </span>
               </div>
@@ -130,12 +130,7 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
               </span>
             </div>
           )}
-          <div
-            className="
-          h-full rounded-xl border border-gray-700 bg-[#111827]
-          p-4
-        "
-          >
+          <div className="h-full rounded-xl border border-gray-700 bg-[#111827] p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-400">Resolved Alerts</p>
@@ -163,7 +158,7 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
             <h3 className="text-lg font-semibold text-white mb-4">Alerts by Severity</h3>
             <div className="h-[300px] w-full overflow-hidden">
               <div className="flex items-center justify-center h-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 300 }} debounce={50}>
                   <PieChart>
                     <Pie
                       data={analytics.alertsBySeverity}
@@ -213,7 +208,7 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
           ">
             <h3 className="text-lg font-semibold text-white mb-4">Alerts Over Time (24h)</h3>
             <div className="h-[300px] w-full overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 300 }} debounce={50}>
                 <LineChart data={analytics.alertsOverTime}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" strokeOpacity={0.3} />
                   <XAxis 
@@ -264,7 +259,7 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
         ">
           <h3 className="text-lg font-semibold text-white mb-4">Alerts by Source</h3>
           <div className="h-[300px] w-full overflow-hidden">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 300 }} debounce={50}>
               <BarChart data={analytics.alertsBySource}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" strokeOpacity={0.3} />
                 <XAxis 

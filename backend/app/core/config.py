@@ -1,7 +1,12 @@
+import json
 from functools import lru_cache
+from pathlib import Path
 from typing import List, Optional, Union
 from pydantic import AnyHttpUrl, validator
 from pydantic_settings import BaseSettings
+
+# Always load backend/.env regardless of process cwd (uvicorn/npm may start from repo root).
+_BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class Settings(BaseSettings):
@@ -54,20 +59,26 @@ class Settings(BaseSettings):
             f"{values.get('REDIS_DB')}"
         )
     
-    # CORS Configuration
+    # CORS Configuration (include 127.0.0.1 and LAN IP; browsers send exact Origin)
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         "http://localhost:3000",
         "http://localhost:3001",
-        "https://sentinelx.com"
+        "http://127.0.0.1:3000",
+        "http://169.254.83.107:3000",
+        "https://sentinelx.com",
     ]
     
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        elif isinstance(v, (list, str)):
-            return v
-        raise ValueError(v)
+        if isinstance(v, str):
+            s = v.strip()
+            if s.startswith("["):
+                try:
+                    return json.loads(s)
+                except json.JSONDecodeError:
+                    pass
+            return [i.strip() for i in s.split(",") if i.strip()]
+        return v
     
     # WebSocket Configuration
     WEBSOCKET_PATH: str = "/ws"
@@ -95,7 +106,7 @@ class Settings(BaseSettings):
     HEALTH_CHECK_INTERVAL: int = 30
 
     class Config:
-        env_file = ".env"
+        env_file = str(_BACKEND_ROOT / ".env")
         case_sensitive = True
 
 

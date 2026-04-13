@@ -1,5 +1,9 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000';
+// Detection service (root paths like /rules); not the same as NEXT_PUBLIC_API_URL /api/v1 proxy.
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_DETECTION_API_URL || "http://127.0.0.1:8080";
+const WS_BASE_URL = (
+  process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8080/ws"
+).replace(/\/ws\/?$/, "") || "ws://127.0.0.1:8080";
 
 export interface DetectionAPI {
   // WebSocket connections
@@ -42,7 +46,6 @@ export const detectionAPI: DetectionAPI = {
     const response = await fetch(`${API_BASE_URL}/rules`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'dev-key'
       }
     });
@@ -86,7 +89,6 @@ export const detectionAPI: DetectionAPI = {
     const response = await fetch(`${API_BASE_URL}/rules/${id}`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
         'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'dev-key'
       }
     });
@@ -99,7 +101,6 @@ export const detectionAPI: DetectionAPI = {
     const response = await fetch(`${API_BASE_URL}/detections`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'dev-key'
       }
     });
@@ -113,7 +114,6 @@ export const detectionAPI: DetectionAPI = {
     const response = await fetch(`${API_BASE_URL}/analytics`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'dev-key'
       }
     });
@@ -157,7 +157,6 @@ export const detectionAPI: DetectionAPI = {
     const response = await fetch(`${API_BASE_URL}/health`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'dev-key'
       }
     });

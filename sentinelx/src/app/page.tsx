@@ -12,6 +12,21 @@ import { Footer } from "@/components/landing/footer-simple";
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 
+const binaryParticles = Array.from({ length: 8 }, (_, i) => ({
+  top: ((i * 13 + 17) % 100) + 0.25,
+  left: ((i * 29 + 11) % 100) + 0.5,
+  duration: 10 + (i % 5),
+  delay: (i % 4) * 1.5,
+  bit: i % 2 === 0 ? '1' : '0',
+}));
+
+const threatIndicators = Array.from({ length: 4 }, (_, i) => ({
+  top: 20 + ((i * 17 + 9) % 60),
+  left: 10 + ((i * 23 + 7) % 80),
+  duration: 3 + (i % 3),
+  delay: i * 1.25,
+}));
+
 export default function LandingPage() {
   const { isAuthenticated, checkAuth } = useAuth();
   const router = useRouter();
@@ -150,47 +165,47 @@ export default function LandingPage() {
         </motion.div>
         
         {/* Binary Code Particles */}
-        {[...Array(8)].map((_, i) => (
+        {binaryParticles.map((particle, i) => (
           <motion.div
             key={`binary-${i}`}
             className="absolute text-green-400/20 font-mono text-xs"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${particle.top}%`,
+              left: `${particle.left}%`,
             }}
             animate={{
               y: [0, -100, 0],
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: 10 + Math.random() * 5,
+              duration: particle.duration,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: Math.random() * 8,
+              delay: particle.delay,
             }}
           >
-            {Math.random() > 0.5 ? '1' : '0'}
+            {particle.bit}
           </motion.div>
         ))}
         
         {/* Threat Indicators */}
-        {[...Array(4)].map((_, i) => (
+        {threatIndicators.map((indicator, i) => (
           <motion.div
             key={`threat-${i}`}
             className="absolute w-1 h-1 bg-red-400/40 rounded-full"
             style={{
-              top: `${20 + Math.random() * 60}%`,
-              left: `${10 + Math.random() * 80}%`,
+              top: `${indicator.top}%`,
+              left: `${indicator.left}%`,
             }}
             animate={{
               scale: [1, 2, 1],
               opacity: [0.4, 0.8, 0.4],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: indicator.duration,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: Math.random() * 6,
+              delay: indicator.delay,
             }}
           />
         ))}

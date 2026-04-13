@@ -39,7 +39,7 @@ export function IncidentAnalytics({ analytics }: IncidentAnalyticsProps) {
     <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
       <h3 className="text-lg font-semibold text-white mb-4">Incidents by Status</h3>
       <div className="h-[300px] w-full overflow-hidden">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 300 }} debounce={50}>
           <BarChart data={analytics.incidentsByStatus}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" strokeOpacity={0.2} />
             <XAxis 

@@ -1,10 +1,23 @@
 import path from "path";
 import type { NextConfig } from "next";
 
+const backendOrigin =
+  process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8080";
+
 const nextConfig: NextConfig = {
   // Parent folder also has package-lock.json; pin Turbopack root to this app
   turbopack: {
     root: path.join(__dirname),
+  },
+  // Allow dev HMR when opening the app via LAN IP (see Next.js allowedDevOrigins)
+  allowedDevOrigins: ["169.254.83.107"],
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${backendOrigin}/api/v1/:path*`,
+      },
+    ];
   },
   trailingSlash: true,
   images: {
