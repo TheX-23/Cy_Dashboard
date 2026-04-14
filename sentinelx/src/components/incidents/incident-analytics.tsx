@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { IncidentAnalytics } from '@/types/incidents';
 
@@ -7,7 +8,23 @@ interface IncidentAnalyticsProps {
   analytics: IncidentAnalytics;
 }
 
-export function IncidentAnalytics({ analytics }: IncidentAnalyticsProps) {
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-gray-800 border border-gray-600 rounded-lg p-3">
+        <p className="text-xs text-gray-400 mb-2">{`Status: ${label}`}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-xs" style={{ color: entry.color }}>
+            {`${entry.name}: ${entry.value ?? 0}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+export const IncidentAnalytics = React.memo(function IncidentAnalytics({ analytics }: IncidentAnalyticsProps) {
   // Defensive check to prevent undefined access
   if (!analytics || !analytics.incidentsByStatus) {
     return (
@@ -19,21 +36,6 @@ export function IncidentAnalytics({ analytics }: IncidentAnalyticsProps) {
     );
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-gray-800 border border-gray-600 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-2">{`Status: ${label}`}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-xs" style={{ color: entry.color }}>
-              {`${entry.name}: ${entry.value ?? 0}`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
@@ -63,6 +65,6 @@ export function IncidentAnalytics({ analytics }: IncidentAnalyticsProps) {
       </div>
     </div>
   );
-}
+});
 
 export default IncidentAnalytics;

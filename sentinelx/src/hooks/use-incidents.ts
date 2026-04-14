@@ -115,7 +115,8 @@ function generateMockIncidents(count: number = 100): Incident[] {
 }
 
 export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
-  const [incidents, setIncidents] = useState<Incident[]>(() => generateMockIncidents(150));
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [isClient, setIsClient] = useState(false);
   const [filter, setFilter] = useState<IncidentFilter>({
     search: '',
     severity: [],
@@ -128,6 +129,11 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+    setIncidents(generateMockIncidents(150));
+  }, []);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -214,6 +220,23 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
     const openIncidents = filteredIncidents.filter(incident => incident.status === 'OPEN').length;
     const criticalIncidents = filteredIncidents.filter(incident => incident.severity === 'CRITICAL').length;
     
+    if (!isClient || totalIncidents === 0) {
+      return {
+        totalIncidents: 0,
+        openIncidents: 0,
+        criticalIncidents: 0,
+        meanTimeToResolve: 0,
+        medianTimeToResolve: 0,
+        incidentsOverTime: [],
+        incidentsBySeverity: [],
+        incidentsByStatus: [],
+        topIncidentTypes: [],
+        resolutionRate: 0,
+        escalationRate: 0,
+        averageAlertsPerIncident: 0
+      };
+    }
+
     const resolvedIncidents = filteredIncidents.filter(incident => 
       incident.status === 'RESOLVED' || incident.status === 'CLOSED'
     );
@@ -302,7 +325,7 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
       escalationRate,
       averageAlertsPerIncident
     };
-  }, [filteredIncidents]);
+  }, [filteredIncidents, isClient]);
 
   const updateFilter = useCallback((newFilter: Partial<IncidentFilter>) => {
     setFilter(prev => ({ ...prev, ...newFilter }));
@@ -363,10 +386,10 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
   }, [filteredIncidents]);
 
   return {
-    incidents: filteredIncidents,
+    incidents: isClient ? filteredIncidents : [],
     analytics,
     filter,
-    isLoading,
+    isLoading: isLoading || !isClient,
     selectedIncidentId,
     updateFilter,
     clearFilter,

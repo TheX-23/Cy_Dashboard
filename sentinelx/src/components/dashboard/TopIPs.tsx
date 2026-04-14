@@ -50,7 +50,7 @@ function TopIPsTooltip({
   return null;
 }
 
-export const TopIPs: React.FC<TopIPsProps> = ({ data }) => {
+export const TopIPs: React.FC<TopIPsProps> = React.memo(({ data }) => {
   const { isDarkMode } = useTheme();
 
   const axisStroke = isDarkMode ? "#94a3b8" : "#64748b";
@@ -83,12 +83,12 @@ export const TopIPs: React.FC<TopIPsProps> = ({ data }) => {
             tick={{ fill: tickFill, fontSize: 10 }}
             width={88}
           />
-          <Tooltip content={TopIPsTooltip} />
+          <Tooltip content={<TopIPsTooltip />} />
           <Bar dataKey="attacks" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={18} />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>
   );
-};
+});
 
 export default TopIPs;

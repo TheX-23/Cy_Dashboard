@@ -138,7 +138,7 @@ export function useAlerts(initialFilter: Partial<AlertFilter> = {}) {
     severity: [],
     status: [],
     source: [],
-    timeRange: '24h',
+    timeRange: '7d',
     assignedTo: '',
     ...initialFilter
   });
@@ -263,25 +263,25 @@ export function useAlerts(initialFilter: Partial<AlertFilter> = {}) {
     const openAlerts = filteredAlerts.filter(alert => alert.status === 'OPEN').length;
     const resolvedAlerts = filteredAlerts.filter(alert => alert.status === 'RESOLVED').length;
 
-    // Alerts over time (last 24 hours)
+    // Alerts over time — bucket by day for 7d, by hour for shorter ranges
     const now = new Date();
-    const alertsOverTime = Array.from({ length: 24 }, (_, i) => {
-      const time = new Date(now.getTime() - (23 - i) * 60 * 60 * 1000);
-      const count = filteredAlerts.filter(alert => {
+    const is7Day = filter.timeRange === '7d';
+    const bucketCount = is7Day ? 7 : 24;
+    const bucketMs = is7Day ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+
+    const alertsOverTime = Array.from({ length: bucketCount }, (_, i) => {
+      const time = new Date(now.getTime() - (bucketCount - 1 - i) * bucketMs);
+      const bucketEnd = new Date(time.getTime() + bucketMs);
+      const inBucket = filteredAlerts.filter(alert => {
         const alertTime = new Date(alert.timestamp);
-        return alertTime >= time && alertTime < new Date(time.getTime() + 60 * 60 * 1000);
-      }).length;
-      const critical = filteredAlerts.filter(alert => {
-        const alertTime = new Date(alert.timestamp);
-        return (alertTime >= time && alertTime < new Date(time.getTime() + 60 * 60 * 1000)) &&
-               alert.severity === 'CRITICAL';
-      }).length;
-      
-      return {
-        time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        total: count,
-        critical
-      };
+        return alertTime >= time && alertTime < bucketEnd;
+      });
+      const critical = inBucket.filter(a => a.severity === 'CRITICAL').length;
+      const label = is7Day
+        ? time.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
+        : time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      return { time: label, total: inBucket.length, critical };
     });
 
     // Alerts by severity

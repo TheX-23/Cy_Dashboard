@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { LoginForm } from '@/components/auth/login-form';
 import { AuthCard } from '@/components/auth/auth-card';
+import { Suspense } from 'react';
 
 export default function LoginPage() {
   const handleSignupClick = () => {
@@ -21,7 +22,9 @@ export default function LoginPage() {
       title="Welcome Back"
       subtitle="Sign in to your SentinelX account"
     >
-      <LoginForm />
+      <Suspense fallback={<div className="text-sm text-slate-400 text-center">Loading authentication...</div>}>
+        <LoginForm />
+      </Suspense>
     </AuthCard>
   );
 }

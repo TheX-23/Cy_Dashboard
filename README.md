@@ -46,13 +46,20 @@ Copy `.env.example` to `.env.local` and set Supabase keys.
   - SOAR action triggers (`block_ip`, `mark_threat`) emitted over realtime stream
   - Supabase schema SQL
 
+- Phase 2 Additions (Recent Updates):
+  - Refactored SOC dashboard modules (`KPICards`, `AlertsFeed`, `ThreatTrendChart`, `TopIPs`, `SystemHealth`).
+  - Memoized frontend components and hooks (`useMemo`, `useCallback`) to fix Next.js hydration issues and improve re-render performance.
+  - Implemented Threat Intelligence dashboard at `/intel` incorporating the new `GlobeThreatMap` geospatial visualization component.
+  - Resolved `Next.js` route discrepancies and 404 errors on authorization and intel pages.
+  - Streamlined theme provider context layer.
+  - Backend/Frontend Concurrent script optimizations (e.g. resolve dev port conflicts).
+
 - Next phases:
   - full Supabase auth session flow
   - realtime pipeline (Supabase Realtime or WebSocket stream)
   - event correlation engine
   - incident and alert persistence workflows
   - SOAR automation rule execution and action bus
-  - geospatial map and advanced analytics modules
 
 ## Realtime test flow
 

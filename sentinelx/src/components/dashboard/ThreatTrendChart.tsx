@@ -15,7 +15,7 @@ interface ThreatTrendChartProps {
   data: TrendData[];
 }
 
-export const ThreatTrendChart: React.FC<ThreatTrendChartProps> = ({ data }) => {
+export const ThreatTrendChart: React.FC<ThreatTrendChartProps> = React.memo(({ data }) => {
   const { isDarkMode } = useTheme();
   
   // Defensive check for data
@@ -103,6 +103,6 @@ export const ThreatTrendChart: React.FC<ThreatTrendChartProps> = ({ data }) => {
       </ResponsiveContainer>
     </ChartContainer>
   );
-};
+});
 
 export default ThreatTrendChart;

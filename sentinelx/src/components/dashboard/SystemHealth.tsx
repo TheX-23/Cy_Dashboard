@@ -16,7 +16,7 @@ interface SystemHealthProps {
   layout?: "default" | "wide";
 }
 
-export const SystemHealth: React.FC<SystemHealthProps> = ({ data, layout = "default" }) => {
+export const SystemHealth: React.FC<SystemHealthProps> = React.memo(({ data, layout = "default" }) => {
   const wide = layout === "wide";
   const metrics = [
     {
@@ -135,6 +135,6 @@ export const SystemHealth: React.FC<SystemHealthProps> = ({ data, layout = "defa
       </div>
     </div>
   );
-};
+});
 
 export default SystemHealth;

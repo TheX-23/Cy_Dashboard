@@ -14,7 +14,7 @@ interface IncidentsListProps {
   incidents: Incident[];
 }
 
-export const IncidentsList: React.FC<IncidentsListProps> = ({ incidents }) => {
+export const IncidentsList: React.FC<IncidentsListProps> = React.memo(({ incidents }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-red-600 dark:text-red-400';
@@ -80,6 +80,6 @@ export const IncidentsList: React.FC<IncidentsListProps> = ({ incidents }) => {
       )}
     </div>
   );
-};
+});
 
 export default IncidentsList;

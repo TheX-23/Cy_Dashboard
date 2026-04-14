@@ -14,7 +14,7 @@ interface AlertsFeedProps {
   alerts: Alert[];
 }
 
-export const AlertsFeed: React.FC<AlertsFeedProps> = ({ alerts }) => {
+export const AlertsFeed:React.FC<AlertsFeedProps> = React.memo(({ alerts }) => {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'critical': return 'border-red-500/25 bg-red-500/10 text-red-700 dark:text-red-400';
@@ -71,6 +71,6 @@ export const AlertsFeed: React.FC<AlertsFeedProps> = ({ alerts }) => {
       )}
     </div>
   );
-};
+});
 
 export default AlertsFeed;

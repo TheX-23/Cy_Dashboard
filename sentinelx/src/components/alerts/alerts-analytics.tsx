@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AlertAnalytics } from '@/types/alerts';
 import { AlertTriangle, Shield, CheckCircle, Clock, TrendingUp, Activity, Bell } from 'lucide-react';
@@ -8,7 +9,23 @@ interface AlertsAnalyticsProps {
   analytics: AlertAnalytics;
 }
 
-export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#111827] border border-gray-700 rounded-lg p-3">
+        <p className="text-xs text-gray-400 mb-2">{`Time/Date: ${label}`}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-xs" style={{ color: entry.color }}>
+            {`${entry.name}: ${entry.value}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+export const AlertsAnalytics = React.memo(function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'CRITICAL': return '#ff0040';
@@ -33,21 +50,6 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
 
   const COLORS = ['#ff0040', '#ff6600', '#ffaa00', '#00ccff'];
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-[#111827] border border-gray-700 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-2">{`Time: ${label}`}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-xs" style={{ color: entry.color }}>
-              {`${entry.name}: ${entry.value}`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="space-y-6">
@@ -355,4 +357,4 @@ export function AlertsAnalytics({ analytics }: AlertsAnalyticsProps) {
       </div>
     </div>
   );
-}
+});

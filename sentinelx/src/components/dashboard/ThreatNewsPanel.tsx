@@ -145,126 +145,114 @@ export const ThreatNewsPanel: React.FC<ThreatNewsPanelProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ translateX: '100%', opacity: 0 }}
-          animate={{ translateX: 0, opacity: 1 }}
-          exit={{ translateX: '100%', opacity: 0 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="fixed top-16 right-4 w-[360px] max-h-[600px] bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden z-[99999] threat-panel transition-theme"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-green-400" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Threat Intelligence</h3>
-              <div className="flex items-center gap-1 text-xs text-green-400">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span>Live</span>
-              </div>
-            </div>
-            
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        <>
+          {/* Backdrop overlay — click outside to close */}
+          <motion.div
+            key="threat-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[99998]"
+            onClick={onClose}
+          />
 
-          {/* Scrollable News List */}
-          <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
-            {news.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.02,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                }}
-                className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 ${getSeverityColor(item.severity)}`}
+          {/* Panel */}
+          <motion.div
+            key="threat-panel"
+            initial={{ translateX: '100%', opacity: 0 }}
+            animate={{ translateX: 0, opacity: 1 }}
+            exit={{ translateX: '100%', opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="fixed top-16 right-4 w-[360px] max-h-[600px] bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden z-[99999] transition-theme"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-green-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Threat Intelligence</h3>
+                <div className="flex items-center gap-1 text-xs text-green-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span>Live</span>
+                </div>
+              </div>
+              
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50"
               >
-                {/* Severity Indicator */}
-                <div className="flex items-center gap-2 mb-2">
-                  {getSeverityIcon(item.severity)}
-                  <span className={`text-xs font-medium capitalize ${item.severity === 'critical' ? 'text-red-400' : item.severity === 'high' ? 'text-orange-400' : item.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400'}`}>
-                    {item.severity}
-                  </span>
-                  {item.time === 'Just now' && (
-                    <span className="text-xs text-green-400 animate-pulse">NEW</span>
-                  )}
-                </div>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-                {/* Title */}
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
-                  {item.title}
-                </h4>
-
-                {/* Summary */}
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 leading-relaxed">
-                  {item.summary}
-                </p>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{item.source}</span>
-                    <span>•</span>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{item.time}</span>
-                    </div>
+            {/* Scrollable News List */}
+            <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+              {news.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+                  }}
+                  className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 ${getSeverityColor(item.severity)}`}
+                >
+                  {/* Severity Indicator */}
+                  <div className="flex items-center gap-2 mb-2">
+                    {getSeverityIcon(item.severity)}
+                    <span className={`text-xs font-medium capitalize ${item.severity === 'critical' ? 'text-red-400' : item.severity === 'high' ? 'text-orange-400' : item.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400'}`}>
+                      {item.severity}
+                    </span>
+                    {item.time === 'Just now' && (
+                      <span className="text-xs text-green-400 animate-pulse">NEW</span>
+                    )}
                   </div>
-                  
-                  {item.url && (
-                    <a
-                      href={item.url}
-                      className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
+
+                  {/* Title */}
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                    {item.title}
+                  </h4>
+
+                  {/* Summary */}
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 leading-relaxed">
+                    {item.summary}
+                  </p>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <span>{item.source}</span>
+                      <span>•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        <span>{item.time}</span>
+                      </div>
+                    </div>
+                    
+                    {item.url && (
+                      <a
+                        href={item.url}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+
+              {news.length === 0 && (
+                <div className="text-center py-8">
+                  <Shield className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-400 dark:text-gray-600 text-sm">No threat intelligence available</p>
                 </div>
-              </motion.div>
-            ))}
-
-            {news.length === 0 && (
-              <div className="text-center py-8">
-                <Shield className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 dark:text-gray-600 text-sm">No threat intelligence available</p>
-              </div>
-            )}
-          </div>
-
-          {/* Custom Scrollbar Styles */}
-          <style jsx>{`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 6px;
-            }
-            
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: rgba(255, 255, 255, 0.1);
-              border-radius: 3px;
-            }
-            
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: rgba(255, 255, 255, 0.3);
-              border-radius: 3px;
-            }
-            
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: rgba(255, 255, 255, 0.5);
-            }
-            
-            /* Ensure panel is always on top */
-            .threat-panel {
-              position: fixed !important;
-              z-index: 99999 !important;
-            }
-          `}</style>
-        </motion.div>
+              )}
+            </div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

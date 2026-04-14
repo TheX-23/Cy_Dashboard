@@ -16,7 +16,7 @@ interface KPICardsProps {
   data: KPIData;
 }
 
-export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
+export const KPICards: React.FC<KPICardsProps> = React.memo(({ data }) => {
   const { isDarkMode } = useTheme();
   
   // Defensive check for data
@@ -119,6 +119,6 @@ export const KPICards: React.FC<KPICardsProps> = ({ data }) => {
       ))}
     </div>
   );
-};
+});
 
 export default KPICards;

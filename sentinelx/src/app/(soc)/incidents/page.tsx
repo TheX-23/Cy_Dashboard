@@ -33,31 +33,15 @@ export default function IncidentsPage() {
   const [isLive, setIsLive] = useState(false);
   const [liveIncidents, setLiveIncidents] = useState<any[]>([]);
 
-  // Prevent accessing analytics if it's undefined
-  if (!analytics || isLoading) {
-    return (
-      <main className="min-h-screen bg-background p-6">
-        <div className="max-w-[1800px] mx-auto">
-          <div className="flex items-center justify-center h-96">
-            <div className="text-foreground">Loading incidents...</div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
   // Toggle live streaming
-  const toggleLive = () => {
-    const newState = !isLive;
-    console.log("Incidents Live Stream Toggle:", newState);
-    setIsLive(newState);
-  };
+  const toggleLive = useCallback(() => {
+    setIsLive(prev => !prev);
+  }, []);
 
   // Real-time incident updates
   useEffect(() => {
     if (!isLive) return;
 
-    console.log("Starting incidents live stream...");
     const interval = setInterval(() => {
       const severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
       const incidentTypes = ["Brute Force Attack", "Data Breach", "Malware Detection", "Suspicious Login", "Unauthorized Access", "DDoS Attack"];
@@ -71,18 +55,10 @@ export default function IncidentsPage() {
         description: "New security incident detected by automated monitoring systems."
       };
 
-      console.log("Adding new incident:", newIncident.title);
-      setLiveIncidents(prev => {
-        const updated = [newIncident, ...prev.slice(0, 20)];
-        console.log("Live incidents count:", updated.length);
-        return updated;
-      });
+      setLiveIncidents(prev => [newIncident, ...prev.slice(0, 20)]);
     }, 3000);
 
-    return () => {
-      console.log("Clearing incidents live stream interval");
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [isLive]);
 
   const selectedIncident = incidents.find(incident => incident.id === selectedIncidentId);
@@ -124,6 +100,19 @@ export default function IncidentsPage() {
     };
     setSavedFilters(prev => [...prev, newFilter]);
   }, [filter]);
+
+  // Guard: show loading UI only AFTER all hooks have been called
+  if (!analytics || isLoading) {
+    return (
+      <main className="min-h-screen bg-background p-6">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="flex items-center justify-center h-96">
+            <div className="text-foreground">Loading incidents...</div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background w-full overflow-x-hidden transform-gpu">

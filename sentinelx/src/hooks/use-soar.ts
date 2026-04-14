@@ -578,10 +578,17 @@ function generateMockExecutions(count: number = 20): WorkflowExecution[] {
 }
 
 export function useSOAR() {
-  const [workflows, setWorkflows] = useState<SOARWorkflow[]>(mockWorkflows);
-  const [executions, setExecutions] = useState<WorkflowExecution[]>(() => generateMockExecutions());
+  const [isClient, setIsClient] = useState(false);
+  const [workflows, setWorkflows] = useState<SOARWorkflow[]>([]);
+  const [executions, setExecutions] = useState<WorkflowExecution[]>([]);
   const [selectedWorkflow, setSelectedWorkflow] = useState<SOARWorkflow | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+    setWorkflows(mockWorkflows);
+    setExecutions(generateMockExecutions());
+  }, []);
   const [filter, setFilter] = useState({
     status: [] as WorkflowStatus[],
     trigger: [] as WorkflowTrigger[],
@@ -590,6 +597,16 @@ export function useSOAR() {
 
   // Calculate dashboard metrics
   const dashboard = useMemo((): SOARDashboard => {
+    if (!isClient) {
+      return {
+        activeWorkflows: 0,
+        totalExecutions: 0,
+        successRate: 0,
+        averageExecutionTime: 0,
+        recentExecutions: [],
+        workflowStats: []
+      };
+    }
     const activeWorkflows = workflows.filter(w => w.enabled)?.length || 0;
     const totalExecutions = executions?.length || 0;
     const successfulExecutions = executions.filter(e => e.status === 'completed')?.length || 0;
@@ -626,7 +643,7 @@ export function useSOAR() {
       recentExecutions: executions?.slice(0, 10),
       workflowStats
     };
-  }, [workflows, executions]);
+  }, [workflows, executions, isClient]);
 
   // Filter workflows
   const filteredWorkflows = useMemo(() => {
@@ -744,8 +761,8 @@ export function useSOAR() {
   }, []);
 
   return {
-    workflows: filteredWorkflows,
-    executions,
+    workflows: isClient ? filteredWorkflows : [],
+    executions: isClient ? executions : [],
     dashboard,
     selectedWorkflow,
     setSelectedWorkflow,

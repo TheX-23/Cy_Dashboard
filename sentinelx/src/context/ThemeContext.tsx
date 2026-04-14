@@ -1,9 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+
+type Theme = 'dark' | 'light';
 
 interface ThemeContextType {
   isDarkMode: boolean;
+  theme: Theme;
   toggleTheme: () => void;
 }
 
@@ -34,6 +37,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     try {
       document.documentElement.classList.toggle("dark", isDarkMode);
+      document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
     } catch (error) {
       console.warn("Could not persist/apply theme:", error);
@@ -41,16 +45,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [isDarkMode]);
 
   // Toggle theme function
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setIsDarkMode(prev => !prev);
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    isDarkMode,
+    theme: (isDarkMode ? 'dark' : 'light') as Theme,
+    toggleTheme
+  }), [isDarkMode, toggleTheme]);
 
   if (!children) {
     return null;
   }
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

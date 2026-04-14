@@ -87,7 +87,7 @@ function ThreatPiePercentLabel({
   );
 }
 
-export const ThreatDistribution: React.FC<ThreatDistributionProps> = ({ data }) => {
+export const ThreatDistribution: React.FC<ThreatDistributionProps> = React.memo(({ data }) => {
   const { isDarkMode } = useTheme();
 
   return (
@@ -105,7 +105,7 @@ export const ThreatDistribution: React.FC<ThreatDistributionProps> = ({ data }) 
             cx="50%"
             cy="46%"
             labelLine={false}
-            label ={ThreatPiePercentLabel}
+            label={ThreatPiePercentLabel}
             outerRadius="72%"
             fill="#8884d8"
             dataKey="value"
@@ -114,7 +114,7 @@ export const ThreatDistribution: React.FC<ThreatDistributionProps> = ({ data }) 
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip content={ThreatDistributionTooltip} />
+          <Tooltip content={<ThreatDistributionTooltip />} />
           <Legend
             verticalAlign="bottom"
             height={52}
@@ -129,6 +129,6 @@ export const ThreatDistribution: React.FC<ThreatDistributionProps> = ({ data }) 
       </ResponsiveContainer>
     </ChartContainer>
   );
-};
+});
 
 export default ThreatDistribution;

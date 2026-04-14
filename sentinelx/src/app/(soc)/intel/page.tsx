@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
-import ThreatMap from "@/components/maps/ThreatMap";
+import dynamic from "next/dynamic";
+const GlobeThreatMap = dynamic(() => import("@/components/maps/GlobeThreatMap"), { 
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full min-h-[280px] w-full items-center justify-center bg-muted transition-theme">
+      <div className="text-muted-foreground">Loading globe map…</div>
+    </div>
+  ),
+});
 
 interface Threat {
   id: string;
@@ -202,8 +210,8 @@ export default function IntelPage() {
                 <span>Low</span>
               </div>
             </div>
-            <div className="h-[520px] rounded-lg overflow-hidden">
-              <ThreatMap threats={threats} attackLines={attackLines} />
+            <div className="h-[520px] rounded-lg overflow-hidden relative">
+              <GlobeThreatMap threats={threats} attackLines={attackLines} />
             </div>
           </div>
         </div>
