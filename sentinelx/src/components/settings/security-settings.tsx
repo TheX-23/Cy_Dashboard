@@ -11,7 +11,7 @@ interface SecuritySettingsProps {
   isLoading?: boolean;
 }
 
-export function SecuritySettings({ settings, onUpdate, isLoading }: SecuritySettingsProps) {
+export function SecuritySettingsPanel({ settings, onUpdate, isLoading }: SecuritySettingsProps) {
   const [isEditingPolicy, setIsEditingPolicy] = useState(false);
   const [isEditingDevices, setIsEditingDevices] = useState(false);
   const [editedPolicy, setEditedPolicy] = useState<Partial<SecuritySettings['passwordPolicy']>>({});

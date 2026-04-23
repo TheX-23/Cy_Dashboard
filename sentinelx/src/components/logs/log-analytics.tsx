@@ -131,23 +131,51 @@ export function LogAnalytics({ analytics }: LogAnalyticsProps) {
         </div>
       </div>
 
-      {/* Top Sources */}
+      {/* Avg Response Time by Source */}
       <div className="glass rounded-xl border border-slate-800/60 p-4 h-[250px]">
-        <h3 className="text-sm font-semibold text-slate-100 mb-4">Top Sources</h3>
+        <h3 className="text-sm font-semibold text-slate-100 mb-4">Avg Response Time by Source</h3>
         <div className="h-[150px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 150 }} debounce={50}>
-            <BarChart data={analytics.topSources} layout="horizontal">
-              <XAxis type="number" stroke="#64748b" fontSize={10} tick={{ fill: '#64748b' }} />
-              <YAxis 
-                type="category" 
-                dataKey="source" 
-                stroke="#64748b" 
-                fontSize={10} 
+            <BarChart data={analytics.responseTimeBySource} layout="vertical">
+              <XAxis
+                type="number"
+                stroke="#64748b"
+                fontSize={10}
                 tick={{ fill: '#64748b' }}
-                width={60}
+                unit="ms"
               />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+              <YAxis
+                type="category"
+                dataKey="source"
+                stroke="#64748b"
+                fontSize={10}
+                tick={{ fill: '#64748b' }}
+                width={65}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const d = payload[0].payload;
+                    return (
+                      <div className="glass rounded-lg border border-slate-700/70 p-3">
+                        <p className="text-xs font-semibold text-slate-100 mb-1">{d.source}</p>
+                        <p className="text-xs text-cyan-400">Avg: {d.avgTime}ms</p>
+                        <p className="text-xs text-orange-400">Peak: {d.maxTime}ms</p>
+                        <p className="text-xs text-slate-400">Logs: {d.count.toLocaleString()}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar dataKey="avgTime" radius={[0, 4, 4, 0]} name="Avg Time">
+                {analytics.responseTimeBySource.map((entry, index) => (
+                  <Cell
+                    key={`rt-cell-${index}`}
+                    fill={entry.avgTime > 700 ? '#ef4444' : entry.avgTime > 400 ? '#f59e0b' : '#10b981'}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

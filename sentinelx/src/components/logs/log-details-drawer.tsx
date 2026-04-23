@@ -23,7 +23,7 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
       case 'WARN': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       case 'ERROR': return 'text-orange-400 bg-orange-500/10 border-orange-500/20';
       case 'CRITICAL': return 'text-red-400 bg-red-500/10 border-red-500/20';
-      default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+      default: return 'text-muted-foreground bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -39,45 +39,45 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="relative ml-auto h-full w-full max-w-2xl bg-slate-900 border-l border-slate-700/50 shadow-2xl">
+      <div className="relative ml-auto h-full w-full max-w-2xl bg-background text-foreground border-l border-border shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-semibold text-slate-100">Log Details</h2>
-            <p className="text-sm text-slate-400 mt-1">
+            <h2 className="text-xl font-semibold text-foreground">Log Details</h2>
+            <p className="text-sm text-muted-foreground mt-1">
               {log.id}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode(viewMode === 'pretty' ? 'raw' : 'pretty')}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
               title={viewMode === 'pretty' ? 'View Raw JSON' : 'View Pretty'}
             >
               {viewMode === 'pretty' ? <FileJson className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
             </button>
             <button
               onClick={() => copyToClipboard(formatJson(log))}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
               title="Copy log data"
             >
               <Copy className="h-4 w-4" />
             </button>
             <button
               onClick={() => onExport?.(log, 'json')}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
               title="Export as JSON"
             >
               <Download className="h-4 w-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -90,19 +90,19 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
             <div className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-100">Basic Information</h3>
+                <h3 className="text-lg font-semibold text-foreground">Basic Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400">Timestamp</label>
+                    <label className="text-xs text-muted-foreground">Timestamp</label>
                     <div className="flex items-center gap-2 mt-1">
-                      <Clock className="h-4 w-4 text-slate-400" />
-                      <span className="text-sm text-slate-200">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground">
                         {log.timestamp.toLocaleString()}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Level</label>
+                    <label className="text-xs text-muted-foreground">Level</label>
                     <div className="mt-1">
                       <span className={cn(
                         "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border",
@@ -113,15 +113,15 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Source</label>
+                    <label className="text-xs text-muted-foreground">Source</label>
                     <div className="mt-1">
-                      <span className="text-sm text-slate-200">{log.source}</span>
+                      <span className="text-sm text-foreground">{log.source}</span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Event Type</label>
+                    <label className="text-xs text-muted-foreground">Event Type</label>
                     <div className="mt-1">
-                      <span className="text-sm text-slate-200">{log.eventType}</span>
+                      <span className="text-sm text-foreground">{log.eventType}</span>
                     </div>
                   </div>
                 </div>
@@ -129,38 +129,38 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
 
               {/* Network Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-100">Network Information</h3>
+                <h3 className="text-lg font-semibold text-foreground">Network Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400">IP Address</label>
+                    <label className="text-xs text-muted-foreground">IP Address</label>
                     <div className="flex items-center gap-2 mt-1">
-                      <Globe className="h-4 w-4 text-slate-400" />
-                      <span className="text-sm text-slate-200 font-mono">{log.ipAddress}</span>
+                      <Globe className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground font-mono">{log.ipAddress}</span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Country</label>
+                    <label className="text-xs text-muted-foreground">Country</label>
                     <div className="mt-1">
-                      <span className="text-sm text-slate-200">
+                      <span className="text-sm text-foreground">
                         {log.metadata.geoLocation?.country || 'Unknown'}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">City</label>
+                    <label className="text-xs text-muted-foreground">City</label>
                     <div className="mt-1">
-                      <span className="text-sm text-slate-200">
+                      <span className="text-sm text-foreground">
                         {log.metadata.geoLocation?.city || 'Unknown'}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">User ID</label>
+                    <label className="text-xs text-muted-foreground">User ID</label>
                     <div className="flex items-center gap-2 mt-1">
                       {log.userId ? (
                         <>
-                          <User className="h-4 w-4 text-slate-400" />
-                          <span className="text-sm text-slate-200">{log.userId}</span>
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm text-foreground">{log.userId}</span>
                         </>
                       ) : (
                         <span className="text-sm text-slate-500">System</span>
@@ -173,22 +173,22 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
               {/* Request Information */}
               {log.metadata.method && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Request Information</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Request Information</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-slate-400">Method</label>
+                      <label className="text-xs text-muted-foreground">Method</label>
                       <div className="mt-1">
-                        <span className="text-sm text-slate-200">{log.metadata.method}</span>
+                        <span className="text-sm text-foreground">{log.metadata.method}</span>
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400">Path</label>
+                      <label className="text-xs text-muted-foreground">Path</label>
                       <div className="mt-1">
-                        <span className="text-sm text-slate-200 font-mono">{log.metadata.path}</span>
+                        <span className="text-sm text-foreground font-mono">{log.metadata.path}</span>
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400">Status Code</label>
+                      <label className="text-xs text-muted-foreground">Status Code</label>
                       <div className="mt-1">
                         <span className={cn(
                           "text-sm font-medium",
@@ -199,9 +199,9 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400">Response Time</label>
+                      <label className="text-xs text-muted-foreground">Response Time</label>
                       <div className="mt-1">
-                        <span className="text-sm text-slate-200">{log.metadata.responseTime}ms</span>
+                        <span className="text-sm text-foreground">{log.metadata.responseTime}ms</span>
                       </div>
                     </div>
                   </div>
@@ -210,18 +210,18 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
 
               {/* Message */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-100">Message</h3>
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                  <p className="text-sm text-slate-200">{log.message}</p>
+                <h3 className="text-lg font-semibold text-foreground">Message</h3>
+                <div className="bg-card rounded-lg p-4 border border-border">
+                  <p className="text-sm text-foreground">{log.message}</p>
                 </div>
               </div>
 
               {/* Payload */}
               {log.metadata.payload && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Payload</h3>
-                  <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                    <pre className="text-sm text-slate-200 overflow-x-auto">
+                  <h3 className="text-lg font-semibold text-foreground">Payload</h3>
+                  <div className="bg-card rounded-lg p-4 border border-border">
+                    <pre className="text-sm text-foreground overflow-x-auto">
                       {formatJson(log.metadata.payload)}
                     </pre>
                   </div>
@@ -231,13 +231,13 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
               {/* Headers */}
               {log.metadata.headers && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Headers</h3>
-                  <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                  <h3 className="text-lg font-semibold text-foreground">Headers</h3>
+                  <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="space-y-2">
                       {Object.entries(log.metadata.headers).map(([key, value]) => (
                         <div key={key} className="flex justify-between">
-                          <span className="text-sm text-slate-400 font-mono">{key}:</span>
-                          <span className="text-sm text-slate-200 font-mono">{value}</span>
+                          <span className="text-sm text-muted-foreground font-mono">{key}:</span>
+                          <span className="text-sm text-foreground font-mono">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -248,12 +248,12 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
               {/* Tags */}
               {log.tags.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Tags</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {log.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-slate-800/50 text-slate-300 border border-slate-700/50"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-card text-slate-300 border border-border"
                       >
                         <Tag className="h-3 w-3" />
                         {tag}
@@ -266,13 +266,13 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
               {/* Anomaly Detection */}
               {log.isAnomaly && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Anomaly Detection</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Anomaly Detection</h3>
                   <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4">
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="h-5 w-5 text-orange-400 mt-0.5" />
                       <div>
                         <p className="text-sm text-orange-400 font-medium">Anomaly Detected</p>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           This log entry has been flagged as potentially suspicious based on pattern analysis.
                         </p>
                       </div>
@@ -284,13 +284,13 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
               {/* Related Logs */}
               {log.relatedLogs && log.relatedLogs.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-100">Related Logs</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Related Logs</h3>
                   <div className="space-y-2">
                     {log.relatedLogs.map((relatedLogId, index) => (
-                      <div key={relatedLogId} className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                      <div key={relatedLogId} className="bg-card rounded-lg p-3 border border-border">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-slate-200 font-mono">{relatedLogId}</span>
-                          <span className="text-xs text-slate-400">Related Entry #{index + 1}</span>
+                          <span className="text-sm text-foreground font-mono">{relatedLogId}</span>
+                          <span className="text-xs text-muted-foreground">Related Entry #{index + 1}</span>
                         </div>
                       </div>
                     ))}
@@ -300,9 +300,9 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
             </div>
           ) : (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-100">Raw JSON</h3>
-              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                <pre className="text-sm text-slate-200 overflow-x-auto">
+              <h3 className="text-lg font-semibold text-foreground">Raw JSON</h3>
+              <div className="bg-card rounded-lg p-4 border border-border">
+                <pre className="text-sm text-foreground overflow-x-auto">
                   {formatJson(log)}
                 </pre>
               </div>
@@ -311,19 +311,19 @@ export function LogDetailsDrawer({ log, onClose, onMarkAsIncident, onExport }: L
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-slate-700/50 p-6">
+        <div className="border-t border-border p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => copyToClipboard(formatJson(log))}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors text-slate-200"
+                className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted-foreground/20 rounded-lg transition-colors text-foreground"
               >
                 <Copy className="h-4 w-4" />
                 Copy
               </button>
               <button
                 onClick={() => onExport?.(log, 'json')}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors text-slate-200"
+                className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted-foreground/20 rounded-lg transition-colors text-foreground"
               >
                 <Download className="h-4 w-4" />
                 Export

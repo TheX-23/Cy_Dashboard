@@ -210,13 +210,13 @@ export function useLogs(initialFilter: Partial<LogFilter> = {}) {
     });
   }, [logs, filter, isClient]);
 
-  // Analytics - only calculate when client-side and data is available
   const analytics = useMemo((): LogAnalytics => {
     if (!isClient || filteredLogs.length === 0) {
       return {
         logsPerMinute: [],
         errorRate: 0,
         topSources: [],
+        responseTimeBySource: [],
         eventDistribution: [],
         totalLogs: 0,
         criticalLogs: 0,
@@ -257,6 +257,28 @@ export function useLogs(initialFilter: Partial<LogFilter> = {}) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
+    // Response time by source
+    const responseTimeAcc = filteredLogs.reduce((acc, log) => {
+      const rt = log.metadata?.responseTime;
+      if (rt == null) return acc;
+      if (!acc[log.source]) {
+        acc[log.source] = { total: 0, max: 0, count: 0 };
+      }
+      acc[log.source].total += rt;
+      acc[log.source].max = Math.max(acc[log.source].max, rt);
+      acc[log.source].count += 1;
+      return acc;
+    }, {} as Record<LogSource, { total: number; max: number; count: number }>);
+
+    const responseTimeBySource = Object.entries(responseTimeAcc)
+      .map(([source, data]) => ({
+        source: source as LogSource,
+        avgTime: Math.round(data.total / data.count),
+        maxTime: data.max,
+        count: data.count
+      }))
+      .sort((a, b) => b.avgTime - a.avgTime);
+
     const eventTypeCounts = filteredLogs.reduce((acc, log) => {
       acc[log.eventType] = (acc[log.eventType] || 0) + 1;
       return acc;
@@ -276,6 +298,7 @@ export function useLogs(initialFilter: Partial<LogFilter> = {}) {
       logsPerMinute,
       errorRate,
       topSources,
+      responseTimeBySource,
       eventDistribution,
       totalLogs: (filteredLogs?.length || 0),
       criticalLogs: filteredLogs.filter(log => log.level === 'CRITICAL')?.length || 0,

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import type { TooltipContentProps } from "recharts/types/component/Tooltip";
+
 import type { PieLabelRenderProps } from "recharts/types/polar/Pie";
 import { useTheme } from "@/context/ThemeContext";
 import { ChartContainer } from "./ChartContainer";
@@ -17,10 +17,8 @@ interface ThreatDistributionProps {
   data: ThreatData[];
 }
 
-function ThreatDistributionTooltip({
-  active,
-  payload,
-}: TooltipContentProps) {
+function ThreatDistributionTooltip(props: any) {
+  const { active, payload } = props;
   const { isDarkMode } = useTheme();
   if (active && payload && payload.length && payload[0]) {
     const payloadData = payload[0];

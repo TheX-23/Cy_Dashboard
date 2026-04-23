@@ -2,7 +2,7 @@
 
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import type { TooltipContentProps } from "recharts/types/component/Tooltip";
+
 import { useTheme } from "@/context/ThemeContext";
 import { ChartContainer } from "./ChartContainer";
 
@@ -16,10 +16,8 @@ interface TopIPsProps {
   data: IPData[];
 }
 
-function TopIPsTooltip({
-  active,
-  payload,
-}: TooltipContentProps) {
+function TopIPsTooltip(props: any) {
+  const { active, payload } = props;
   const { isDarkMode } = useTheme();
   if (active && payload && payload.length && payload[0]) {
     const payloadData = payload[0];

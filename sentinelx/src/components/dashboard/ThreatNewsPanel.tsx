@@ -164,10 +164,10 @@ export const ThreatNewsPanel: React.FC<ThreatNewsPanelProps> = ({
             animate={{ translateX: 0, opacity: 1 }}
             exit={{ translateX: '100%', opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed top-16 right-4 w-[360px] max-h-[600px] bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden z-[99999] transition-theme"
+            className="fixed top-16 right-4 w-[360px] max-h-[600px] bg-card text-card-foreground border border-border rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden z-[99999] transition-theme"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-green-400" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Threat Intelligence</h3>
@@ -197,7 +197,7 @@ export const ThreatNewsPanel: React.FC<ThreatNewsPanelProps> = ({
                     scale: 1.02,
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 ${getSeverityColor(item.severity)}`}
+                  className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 bg-muted border-border hover:border-muted-foreground/50 ${getSeverityColor(item.severity)}`}
                 >
                   {/* Severity Indicator */}
                   <div className="flex items-center gap-2 mb-2">

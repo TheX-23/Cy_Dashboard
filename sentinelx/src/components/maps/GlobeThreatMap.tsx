@@ -232,6 +232,7 @@ export default function GlobeThreatMap({
       cancelAnimationFrame(prev.frameId);
       prev.ro.disconnect();
       prev.controls.dispose();
+      prev.renderer.forceContextLoss();
       prev.renderer.dispose();
       if (el.contains(prev.renderer.domElement)) el.removeChild(prev.renderer.domElement);
       stateRef.current = null;
@@ -253,7 +254,14 @@ export default function GlobeThreatMap({
       camera.position.set(0, 0.3, 2.8);
 
       // Renderer
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      let renderer: THREE.WebGLRenderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+      } catch (err) {
+        console.error("WebGL exhausted or unavailable:", err);
+        el.innerHTML = "<div style='display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-size:14px;text-align:center;padding:1rem;'>WebGL driver memory exhausted.<br/>Please perform a Hard Refresh (Ctrl+Shift+R or Cmd+Shift+R) to clear your browser cache.</div>";
+        return;
+      }
       renderer.setSize(w, h);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       el.appendChild(renderer.domElement);
@@ -392,6 +400,7 @@ export default function GlobeThreatMap({
           }
         });
         
+        st.renderer.forceContextLoss();
         st.renderer.dispose();
         if (el.contains(st.renderer.domElement)) el.removeChild(st.renderer.domElement);
         stateRef.current = null;

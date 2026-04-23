@@ -95,7 +95,7 @@ function generateMockIncidents(count: number = 100): Incident[] {
       affectedAssets: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, j) => ({
         id: `asset-${j}`,
         name: `Server-${j + 1}`,
-        type: ['server', 'user', 'application', 'network', 'database'][Math.floor(Math.random() * 5)],
+        type: (['server', 'user', 'application', 'network', 'database'] as const)[Math.floor(Math.random() * 5)],
         ip: `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
         location: `${city}, ${country}`
       })),
@@ -278,10 +278,10 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
     }, {} as Record<IncidentSeverity, number>);
 
     const incidentsBySeverity = Object.entries(severityCounts)
-      .map(([severity, count]) => ({ severity, count }))
+      .map(([severity, count]) => ({ severity: severity as IncidentSeverity, count }))
       .sort((a, b) => {
-        const severityOrder = { 'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3 };
-        return severityOrder[a.severity] - severityOrder[b.severity];
+        const severityOrder: Record<string, number> = { 'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3 };
+        return (severityOrder[a.severity] ?? 99) - (severityOrder[b.severity] ?? 99);
       });
 
     // Incidents by status
@@ -291,7 +291,7 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
     }, {} as Record<IncidentStatus, number>);
 
     const incidentsByStatus = Object.entries(statusCounts)
-      .map(([status, count]) => ({ status, count }))
+      .map(([status, count]) => ({ status: status as IncidentStatus, count }))
       .sort((a, b) => b.count - a.count);
 
     // Top incident types
@@ -307,7 +307,7 @@ export function useIncidents(initialFilter: Partial<IncidentFilter> = {}) {
       .slice(0, 5);
 
     const resolutionRate = totalIncidents > 0 ? (resolvedIncidents.length / totalIncidents) * 100 : 0;
-    const escalationRate = totalIncidents > 0 ? (criticalIncidents.length / totalIncidents) * 100 : 0;
+    const escalationRate = totalIncidents > 0 ? (criticalIncidents / totalIncidents) * 100 : 0;
     const averageAlertsPerIncident = filteredIncidents.length > 0 ? 
       filteredIncidents.reduce((sum, incident) => sum + incident.linkedAlerts.length, 0) / filteredIncidents.length : 0;
 

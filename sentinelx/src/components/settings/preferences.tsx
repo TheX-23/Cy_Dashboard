@@ -210,12 +210,16 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   <p className="text-sm text-white font-medium">Desktop Notifications</p>
                   <p className="text-xs text-slate-400">Show desktop alerts for important events</p>
                 </div>
-                <input
+                 <input
                   type="checkbox"
                   checked={editedPreferences.notifications?.desktop ?? preferences.notifications.desktop}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    notifications: { ...prev.notifications, desktop: e.target.checked }
+                    notifications: {
+                      desktop: e.target.checked,
+                      sound: prev.notifications?.sound ?? preferences.notifications.sound,
+                      email: prev.notifications?.email ?? preferences.notifications.email,
+                    }
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -230,7 +234,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   checked={editedPreferences.notifications?.sound ?? preferences.notifications.sound}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    notifications: { ...prev.notifications, sound: e.target.checked }
+                    notifications: {
+                      desktop: prev.notifications?.desktop ?? preferences.notifications.desktop,
+                      sound: e.target.checked,
+                      email: prev.notifications?.email ?? preferences.notifications.email,
+                    }
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -245,7 +253,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   checked={editedPreferences.notifications?.email ?? preferences.notifications.email}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    notifications: { ...prev.notifications, email: e.target.checked }
+                    notifications: {
+                      desktop: prev.notifications?.desktop ?? preferences.notifications.desktop,
+                      sound: prev.notifications?.sound ?? preferences.notifications.sound,
+                      email: e.target.checked,
+                    }
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -304,7 +316,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   value={editedPreferences.dashboard?.defaultTab || preferences.dashboard.defaultTab}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    dashboard: { ...prev.dashboard, defaultTab: e.target.value }
+                    dashboard: {
+                      defaultTab: e.target.value,
+                      refreshInterval: prev.dashboard?.refreshInterval ?? preferences.dashboard.refreshInterval,
+                      compactMode: prev.dashboard?.compactMode ?? preferences.dashboard.compactMode,
+                    }
                   }))}
                   className="w-full px-3 py-2 bg-black/50 border border-green-500/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
                 >
@@ -322,7 +338,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   value={editedPreferences.dashboard?.refreshInterval || preferences.dashboard.refreshInterval}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    dashboard: { ...prev.dashboard, refreshInterval: parseInt(e.target.value) || 30 }
+                    dashboard: {
+                      defaultTab: prev.dashboard?.defaultTab ?? preferences.dashboard.defaultTab,
+                      refreshInterval: parseInt(e.target.value) || 30,
+                      compactMode: prev.dashboard?.compactMode ?? preferences.dashboard.compactMode,
+                    }
                   }))}
                   min="10"
                   max="300"
@@ -341,7 +361,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                 checked={editedPreferences.dashboard?.compactMode ?? preferences.dashboard.compactMode}
                 onChange={(e) => setEditedPreferences(prev => ({
                   ...prev,
-                  dashboard: { ...prev.dashboard, compactMode: e.target.checked }
+                  dashboard: {
+                    defaultTab: prev.dashboard?.defaultTab ?? preferences.dashboard.defaultTab,
+                    refreshInterval: prev.dashboard?.refreshInterval ?? preferences.dashboard.refreshInterval,
+                    compactMode: e.target.checked,
+                  }
                 }))}
                 className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
               />
@@ -381,7 +405,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   value={editedPreferences.accessibility?.fontSize || preferences.accessibility.fontSize}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    accessibility: { ...prev.accessibility, fontSize: e.target.value as 'small' | 'medium' | 'large' }
+                    accessibility: {
+                      highContrast: prev.accessibility?.highContrast ?? preferences.accessibility.highContrast,
+                      reducedMotion: prev.accessibility?.reducedMotion ?? preferences.accessibility.reducedMotion,
+                      fontSize: e.target.value as 'small' | 'medium' | 'large',
+                    }
                   }))}
                   className="w-full px-3 py-2 bg-black/50 border border-green-500/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
                 >
@@ -403,7 +431,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   checked={editedPreferences.accessibility?.highContrast ?? preferences.accessibility.highContrast}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    accessibility: { ...prev.accessibility, highContrast: e.target.checked }
+                    accessibility: {
+                      highContrast: e.target.checked,
+                      reducedMotion: prev.accessibility?.reducedMotion ?? preferences.accessibility.reducedMotion,
+                      fontSize: prev.accessibility?.fontSize ?? preferences.accessibility.fontSize,
+                    }
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -418,7 +450,11 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                   checked={editedPreferences.accessibility?.reducedMotion ?? preferences.accessibility.reducedMotion}
                   onChange={(e) => setEditedPreferences(prev => ({
                     ...prev,
-                    accessibility: { ...prev.accessibility, reducedMotion: e.target.checked }
+                    accessibility: {
+                      highContrast: prev.accessibility?.highContrast ?? preferences.accessibility.highContrast,
+                      reducedMotion: e.target.checked,
+                      fontSize: prev.accessibility?.fontSize ?? preferences.accessibility.fontSize,
+                    }
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />

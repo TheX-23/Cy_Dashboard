@@ -26,7 +26,7 @@ export interface Incident {
   timeline: IncidentTimelineEvent[];
   riskScore: number;
   estimatedResolutionTime: number;
-  actualResolutionTime?: number;
+  actualResolutionTime?: Date;
   priority: number;
   sourceAlertId?: string;
   correlationId?: string;

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useSettings } from '@/hooks/use-settings';
 import { AccountSettings } from '@/components/settings/account-settings';
-import { SecuritySettings } from '@/components/settings/security-settings';
+import { SecuritySettingsPanel } from '@/components/settings/security-settings';
 import { UsersRoles } from '@/components/settings/users-roles';
 import { APIKeys } from '@/components/settings/api-keys';
 import { Preferences } from '@/components/settings/preferences';
@@ -105,7 +105,7 @@ export default function SettingsPage() {
         );
       case 'security':
         return (
-          <SecuritySettings
+          <SecuritySettingsPanel
             settings={security}
             onUpdate={updateSecurity}
             isLoading={isLoading}

@@ -279,7 +279,7 @@ function generateMockDetectionRules(): DetectionRule[] {
       threshold: {
         field: 'request_parameters',
         operator: 'contains',
-        value: 'SELECT|INSERT|UPDATE|DELETE|DROP',
+        value: 1,
         timeWindow: 0
       },
       riskScoring: {

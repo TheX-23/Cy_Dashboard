@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       initial={false}
       animate={{
         width: isCollapsed ? 64 : 240,
-        transition: { duration: 0.3, ease: [0.25, 0.1] }
+        transition: { duration: 0.3, ease: 'easeInOut' }
       }}
       className={cn(
         "fixed left-0 top-0 h-full bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700/50 z-50",

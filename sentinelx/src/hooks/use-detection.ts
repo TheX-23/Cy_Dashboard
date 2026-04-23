@@ -292,7 +292,7 @@ export function useDetection(initialFilter: Partial<DetectionFilter> = {}) {
   // Update events from WebSocket
   useEffect(() => {
     if (isConnected && threats.length > 0) {
-      setEvents(prev => [...threats, ...prev].slice(0, 500));
+      setEvents(prev => [...(threats as DetectionEvent[]), ...prev].slice(0, 500));
     }
   }, [threats, isConnected]);
 

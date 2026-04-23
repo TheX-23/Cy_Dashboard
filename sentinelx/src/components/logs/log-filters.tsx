@@ -65,18 +65,18 @@ export function LogFilters({
     <div className="space-y-4">
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
           type="text"
           placeholder="Search logs, IP addresses, user IDs, messages..."
           value={searchDebounce}
           onChange={(e) => setSearchDebounce(e?.target?.value || '')}
-          className="w-full pl-10 pr-4 py-2 bg-slate-900/50 border border-slate-700/50 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+          className="w-full pl-10 pr-4 py-2 bg-background/50 border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
         />
         {searchDebounce && (
           <button
             onClick={() => setSearchDebounce('')}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-200"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </button>
@@ -90,13 +90,13 @@ export function LogFilters({
           <select
             value={filter.timeRange}
             onChange={(e) => onFilterChange({ timeRange: e?.target?.value as any })}
-            className="appearance-none bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 pr-8"
+            className="appearance-none bg-background/50 border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 pr-8"
           >
             {TIME_RANGES.map(range => (
               <option key={range.value} value={range.value}>{range.label}</option>
             ))}
           </select>
-          <Calendar className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          <Calendar className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
 
         {/* Log Levels */}
@@ -114,7 +114,7 @@ export function LogFilters({
                 "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200",
                 filter.levels.includes(level)
                   ? getLevelColor(level)
-                  : "bg-slate-800/50 text-slate-400 border-slate-700/50 hover:bg-slate-700/50"
+                  : "bg-muted text-muted-foreground border-border hover:bg-muted-foreground/20"
               )}
             >
               {level}
@@ -135,7 +135,7 @@ export function LogFilters({
                 onFilterChange({ sources: newSources });
               }
             }}
-            className="appearance-none bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+            className="appearance-none bg-background/50 border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
           >
             <option value="">All Sources</option>
             {LOG_SOURCES.map(source => (
@@ -157,7 +157,7 @@ export function LogFilters({
                 onFilterChange({ eventTypes: newTypes });
               }
             }}
-            className="appearance-none bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+            className="appearance-none bg-background/50 border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
           >
             <option value="">All Events</option>
             {EVENT_TYPES.map(type => (
@@ -172,7 +172,7 @@ export function LogFilters({
           placeholder="IP Address"
           value={filter.ipAddress}
           onChange={(e) => onFilterChange({ ipAddress: e?.target?.value || '' })}
-          className="bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-slate-100 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+          className="bg-background/50 border border-border rounded-lg px-3 py-2 text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
         />
 
         {/* User ID */}
@@ -181,7 +181,7 @@ export function LogFilters({
           placeholder="User ID"
           value={filter.userId}
           onChange={(e) => onFilterChange({ userId: e?.target?.value || '' })}
-          className="bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-slate-100 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+          className="bg-background/50 border border-border rounded-lg px-3 py-2 text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
         />
 
         {/* Actions */}
@@ -189,7 +189,7 @@ export function LogFilters({
           {hasActiveFilters && (
             <button
               onClick={onClear}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/20 rounded-lg transition-colors"
               title="Clear filters"
             >
               <RotateCcw className="h-4 w-4" />
@@ -199,7 +199,7 @@ export function LogFilters({
           {onSaveFilter && (
             <button
               onClick={() => setShowSaveDialog(true)}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/20 rounded-lg transition-colors"
               title="Save filter"
             >
               <Save className="h-4 w-4" />
@@ -231,7 +231,7 @@ export function LogFilters({
           {filter.sources.map(source => (
             <span
               key={source}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-slate-800/50 text-slate-300 border border-slate-700/50"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground border border-border"
             >
               {source}
               <button
@@ -245,7 +245,7 @@ export function LogFilters({
           {filter.eventTypes.map(type => (
             <span
               key={type}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-slate-800/50 text-slate-300 border border-slate-700/50"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground border border-border"
             >
               {type}
               <button
@@ -257,7 +257,7 @@ export function LogFilters({
             </span>
           ))}
           {filter.ipAddress && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-slate-800/50 text-slate-300 border border-slate-700/50">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground border border-border">
               IP: {filter.ipAddress}
               <button
                 onClick={() => onFilterChange({ ipAddress: '' })}
@@ -268,7 +268,7 @@ export function LogFilters({
             </span>
           )}
           {filter.userId && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-slate-800/50 text-slate-300 border border-slate-700/50">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground border border-border">
               User: {filter.userId}
               <button
                 onClick={() => onFilterChange({ userId: '' })}
@@ -284,7 +284,7 @@ export function LogFilters({
       {/* Saved Filters */}
       {savedFilters?.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          <span className="text-xs text-slate-400 font-medium">Saved:</span>
+          <span className="text-xs text-muted-foreground font-medium">Saved:</span>
           {savedFilters.map(saved => (
             <button
               key={saved.id}
@@ -299,15 +299,15 @@ export function LogFilters({
 
       {/* Save Filter Dialog */}
       {showSaveDialog && onSaveFilter && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700/50 rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">Save Filter</h3>
+        <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
+          <div className="bg-slate-900 border border-border rounded-lg p-6 w-96">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Save Filter</h3>
             <input
               type="text"
               placeholder="Filter name..."
               value={saveName}
               onChange={(e) => setSaveName(e?.target?.value || '')}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 mb-4"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 mb-4"
               autoFocus
             />
             <div className="flex gap-2 justify-end">
@@ -316,7 +316,7 @@ export function LogFilters({
                   setShowSaveDialog(false);
                   setSaveName('');
                 }}
-                className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
+                className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 Cancel
               </button>

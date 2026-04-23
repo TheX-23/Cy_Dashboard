@@ -56,8 +56,8 @@ export const SystemHealth: React.FC<SystemHealthProps> = React.memo(({ data, lay
     : "grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3";
 
   const metricCardClass = wide
-    ? "min-w-0 rounded-lg border border-border bg-muted/50 p-3 dark:border-slate-700/50 dark:bg-slate-800/50 lg:p-4"
-    : "min-w-0 rounded-lg border border-border bg-muted/50 p-2.5 sm:p-3 dark:border-slate-700/50 dark:bg-slate-800/50";
+    ? "min-w-0 rounded-lg border border-border bg-card text-card-foreground p-3 lg:p-4"
+    : "min-w-0 rounded-lg border border-border bg-card text-card-foreground p-2.5 sm:p-3";
 
   return (
     <div className="min-w-0 space-y-4">
@@ -103,7 +103,7 @@ export const SystemHealth: React.FC<SystemHealthProps> = React.memo(({ data, lay
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.35 }}
-          className={`rounded-lg border border-border bg-muted/50 dark:border-slate-700/50 dark:bg-slate-800/50 ${wide ? "flex min-h-[88px] items-center p-4 lg:p-5" : "p-4"}`}
+          className={`rounded-lg border border-border bg-card text-card-foreground ${wide ? "flex min-h-[88px] items-center p-4 lg:p-5" : "p-4"}`}
         >
           <div className="flex w-full items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -120,7 +120,7 @@ export const SystemHealth: React.FC<SystemHealthProps> = React.memo(({ data, lay
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.42 }}
-          className={`rounded-lg border border-green-500/25 bg-gradient-to-r from-green-500/15 to-blue-500/15 dark:border-green-500/30 dark:from-green-500/20 dark:to-blue-500/20 ${wide ? "flex min-h-[88px] items-center p-4 lg:p-5" : "p-4"}`}
+          className={`rounded-lg border border-green-500/25 bg-card text-card-foreground bg-gradient-to-r from-green-500/15 to-blue-500/15 dark:border-green-500/30 dark:from-green-500/20 dark:to-blue-500/20 ${wide ? "flex min-h-[88px] items-center p-4 lg:p-5" : "p-4"}`}
         >
           <div className="flex w-full items-center justify-between gap-4">
             <div>

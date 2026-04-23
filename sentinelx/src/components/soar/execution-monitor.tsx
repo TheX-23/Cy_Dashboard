@@ -21,17 +21,17 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
       case 'completed': return <CheckCircle className="h-4 w-4 text-green-400" />;
       case 'failed': return <XCircle className="h-4 w-4 text-red-400" />;
       case 'paused': return <Pause className="h-4 w-4 text-yellow-400" />;
-      default: return <AlertTriangle className="h-4 w-4 text-slate-400" />;
+      default: return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: WorkflowStatus) => {
     switch (status) {
       case 'executing': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
-      case 'completed': return 'text-green-400 bg-green-500/10 border-green-500/20';
+      case 'completed': return 'text-green-400 bg-green-500/10 border-border';
       case 'failed': return 'text-red-400 bg-red-500/10 border-red-500/20';
       case 'paused': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-      default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+      default: return 'text-muted-foreground bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -40,8 +40,8 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
       case 'running': return <Activity className="h-3 w-3 text-blue-400 animate-pulse" />;
       case 'completed': return <CheckCircle className="h-3 w-3 text-green-400" />;
       case 'failed': return <XCircle className="h-3 w-3 text-red-400" />;
-      case 'skipped': return <Pause className="h-3 w-3 text-slate-400" />;
-      default: return <Clock className="h-3 w-3 text-slate-400" />;
+      case 'skipped': return <Pause className="h-3 w-3 text-muted-foreground" />;
+      default: return <Clock className="h-3 w-3 text-muted-foreground" />;
     }
   };
 
@@ -83,8 +83,8 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
     <div className="space-y-6">
       {/* Active Executions */}
       {activeExecutions.length > 0 && (
-        <div className="glass-neon rounded-xl border border-green-500/30 overflow-hidden">
-          <div className="p-4 border-b border-green-500/20 bg-blue-500/5">
+        <div className="bg-card text-card-foreground rounded-xl border border-border overflow-hidden">
+          <div className="p-4 border-b border-border bg-blue-500/5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Activity className="h-5 w-5 text-blue-400 animate-pulse" />
@@ -98,7 +98,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
           
           <div className="p-4 space-y-3">
             {activeExecutions.map((execution) => (
-              <div key={execution.id} className="flex items-center gap-4 p-3 bg-black/30 rounded-lg">
+              <div key={execution.id} className="flex items-center gap-4 p-3 bg-muted/50 rounded-lg">
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
                     <Activity className="h-5 w-5 text-blue-400 animate-pulse" />
@@ -108,7 +108,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                 
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-white font-medium">
+                    <span className="text-foreground font-medium">
                       Workflow #{execution.workflowId}
                     </span>
                     <span className="text-xs text-blue-400">
@@ -116,7 +116,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-muted-foreground">
                       Started {formatDistanceToNowStrict(execution.startTime, { addSuffix: true })}
                     </span>
                     {execution.currentStep && (
@@ -129,7 +129,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
 
                 <button
                   onClick={() => toggleExecutionExpanded(execution.id)}
-                  className="p-2 text-slate-400 hover:text-blue-400 transition-colors"
+                  className="p-2 text-muted-foreground hover:text-blue-400 transition-colors"
                 >
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -140,8 +140,8 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
       )}
 
       {/* Recent Executions */}
-      <div className="glass-neon rounded-xl border border-green-500/30 overflow-hidden">
-        <div className="p-4 border-b border-green-500/20">
+      <div className="bg-card text-card-foreground rounded-xl border border-border overflow-hidden">
+        <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-green-400" />
@@ -155,14 +155,14 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                   "flex items-center gap-2 px-3 py-1 rounded-lg border transition-colors text-sm",
                   autoRefresh 
                     ? "bg-green-500/20 text-green-400 border-green-500/30" 
-                    : "bg-slate-500/20 text-slate-400 border-slate-500/30"
+                    : "bg-slate-500/20 text-muted-foreground border-slate-500/30"
                 )}
               >
                 <Activity className={cn("h-4 w-4", autoRefresh && "animate-pulse")} />
                 Auto-refresh
               </button>
               
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-muted-foreground">
                 {recentExecutions.length} executions
               </span>
             </div>
@@ -171,10 +171,10 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
 
         <div className="max-h-96 overflow-y-auto">
           {recentExecutions.map((execution) => (
-            <div key={execution.id} className="border-b border-green-500/10 last:border-b-0">
+            <div key={execution.id} className="border-b border-border last:border-b-0">
               {/* Execution Header */}
               <div 
-                className="flex items-center justify-between p-4 hover:bg-green-500/5 transition-colors cursor-pointer"
+                className="flex items-center justify-between p-4 hover:bg-muted-foreground/10 transition-colors cursor-pointer"
                 onClick={() => toggleExecutionExpanded(execution.id)}
               >
                 <div className="flex items-center gap-4">
@@ -182,7 +182,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                   
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-white font-medium">
+                      <span className="text-foreground font-medium">
                         Workflow #{execution.workflowId}
                       </span>
                       <span className={cn(
@@ -191,12 +191,12 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                       )}>
                         {execution.status.toUpperCase()}
                       </span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-muted-foreground">
                         {execution.triggeredBy === 'automatic' ? 'AUTO' : 'MANUAL'}
                       </span>
                     </div>
                     
-                    <div className="flex items-center gap-4 text-xs text-slate-400">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <span>
                         Started {formatDistanceToNowStrict(execution.startTime, { addSuffix: true })}
                       </span>
@@ -210,26 +210,26 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                 </div>
 
                 <ChevronRight className={cn(
-                  "h-4 w-4 text-slate-400 transition-transform",
+                  "h-4 w-4 text-muted-foreground transition-transform",
                   expandedExecutions.has(execution.id) && "rotate-90"
                 )} />
               </div>
 
               {/* Expanded Details */}
               {expandedExecutions.has(execution.id) && (
-                <div className="p-4 bg-black/20 border-t border-green-500/20">
+                <div className="p-4 bg-muted/30 border-t border-border">
                   {/* Steps Progress */}
                   <div className="mb-4">
                     <h4 className="text-sm font-semibold text-green-400 mb-3">Steps Progress</h4>
                     <div className="space-y-2">
                       {execution.executedSteps.map((step, index) => (
                         <div key={step.stepId} className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-full bg-black/50 border border-green-500/30 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-muted border border-green-500/30 flex items-center justify-center">
                             {getStepStatusIcon(step.status)}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-sm text-white">Step {index + 1}</span>
+                              <span className="text-sm text-foreground">Step {index + 1}</span>
                               <span className={cn(
                                 "text-xs px-2 py-1 rounded-full border",
                                 getStatusColor(step.status as WorkflowStatus)
@@ -272,11 +272,11 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
                               )}>
                                 {log.level.toUpperCase()}
                               </span>
-                              <span className="text-slate-500">
+                              <span className="text-muted-foreground">
                                 {formatDistanceToNowStrict(log.timestamp, { addSuffix: true })}
                               </span>
                             </div>
-                            <p className="text-slate-300">{log.message}</p>
+                            <p className="text-muted-foreground">{log.message}</p>
                           </div>
                         </div>
                       ))}
@@ -285,9 +285,9 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
 
                   {/* Trigger Data */}
                   {execution.triggerData && (
-                    <div className="mt-4 pt-4 border-t border-green-500/20">
+                    <div className="mt-4 pt-4 border-t border-border">
                       <h4 className="text-sm font-semibold text-green-400 mb-3">Trigger Data</h4>
-                      <div className="p-3 bg-black/50 rounded-lg">
+                      <div className="p-3 bg-muted rounded-lg">
                         <pre className="text-xs text-green-400 overflow-x-auto">
                           {JSON.stringify(execution.triggerData, null, 2)}
                         </pre>
@@ -300,7 +300,7 @@ export function ExecutionMonitor({ executions, isLiveMonitoring }: ExecutionMoni
           ))}
 
           {recentExecutions.length === 0 && (
-            <div className="p-12 text-center text-slate-400">
+            <div className="p-12 text-center text-muted-foreground">
               <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium mb-2">No Executions Found</p>
               <p className="text-sm">Workflow executions will appear here when triggered</p>

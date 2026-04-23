@@ -24,6 +24,7 @@ export type ActionType =
   | 'isolate_system'
   | 'scan_file'
   | 'block_execution'
+  | 'track_ip_activity'
   | 'escalate_approval';
 
 export interface WorkflowAction {

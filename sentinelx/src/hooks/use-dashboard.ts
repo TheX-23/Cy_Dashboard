@@ -182,137 +182,20 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
   }, []);
 
   // Handle real-time WebSocket updates
+  // NOTE: lastMessage is currently null (USE_MOCK_DATA = true), this block is a no-op
   useEffect(() => {
     if (!lastMessage || !isConnected) return;
-
-    switch (lastMessage.type) {
-      case 'alerts:update':
-        // Update stats and recent alerts when alerts are updated
-        if (lastMessage.action === 'created') {
-          setStats(prev => {
-            if (!prev) return prev;
-            const severityKey = `${lastMessage.data.severity}_alerts` as keyof DashboardStats;
-            return {
-              ...prev,
-              total_alerts: prev.total_alerts + 1,
-              [severityKey]: (prev[severityKey] || 0) + 1
-            };
-          });
-          
-          setRecentAlerts(prev => [lastMessage.data, ...prev.slice(0, 9)]);
-          setActivityFeed(prev => [{
-            id: lastMessage.data.id,
-            type: 'alert',
-            title: lastMessage.data.title,
-            severity: lastMessage.data.severity,
-            status: lastMessage.data.status,
-            timestamp: lastMessage.data.created_at,
-            source_ip: lastMessage.data.source_ip
-          }, ...prev.slice(0, 19)]);
-        } else if (lastMessage.action === 'resolved') {
-          setStats(prev => {
-            if (!prev) return prev;
-            const severityKey = `${lastMessage.data.severity}_alerts` as keyof DashboardStats;
-            return {
-              ...prev,
-              [severityKey]: Math.max(0, (prev[severityKey] || 0) - 1)
-            };
-          });
-        }
-        break;
-
-      case 'logs:update':
-        // Update detection stats when logs are processed
-        if (lastMessage.action === 'processed') {
-          setStats(prev => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              total_detections: prev.total_detections + 1
-            };
-          });
-        }
-        break;
-
-      case 'threats:update':
-        // Update threat map when threat intel is updated
-        if (lastMessage.action === 'added') {
-          setThreatMap(prev => {
-            const countryIndex = prev.findIndex(t => t.country === lastMessage.data.country);
-            if (countryIndex >= 0) {
-              const updated = [...prev];
-              updated[countryIndex] = {
-                ...updated[countryIndex],
-                threats: updated[countryIndex].threats + 1
-              };
-              return updated;
-            } else {
-              return [...prev, {
-                country: lastMessage.data.country,
-                threats: 1,
-                severity: lastMessage.data.severity
-              }];
-            }
-          });
-        }
-        break;
-
-      case 'incidents:update':
-        // Update incident stats
-        if (lastMessage.action === 'created') {
-          setStats(prev => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              total_incidents: prev.total_incidents + 1,
-              open_incidents: prev.open_incidents + 1
-            };
-          });
-          
-          setActivityFeed(prev => [{
-            id: lastMessage.data.id,
-            type: 'incident',
-            title: lastMessage.data.title,
-            severity: lastMessage.data.severity,
-            status: lastMessage.data.status,
-            timestamp: lastMessage.data.created_at
-          }, ...prev.slice(0, 19)]);
-        } else if (lastMessage.action === 'resolved') {
-          setStats(prev => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              open_incidents: Math.max(0, prev.open_incidents - 1),
-              resolved_incidents: prev.resolved_incidents + 1
-            };
-          });
-        }
-        break;
-
-      case 'system:health':
-        // Update system health
-        setSystemHealth(lastMessage.data);
-        break;
-    }
+    // When WebSocket is enabled, handle real-time events here
   }, [lastMessage, isConnected]);
 
-  // Refresh data periodically
+  // Refresh data periodically (only when WebSocket is active)
   useEffect(() => {
-    if (!isConnected) return;
+    // Periodic refresh is disabled while USE_MOCK_DATA is true
+    if (!isConnected || USE_MOCK_DATA) return;
 
     const interval = setInterval(async () => {
-      try {
-        const [statsData, healthData] = await Promise.all([
-          apiClient.getDashboardStats(),
-          apiClient.getSystemHealth(),
-        ]);
-        
-        setStats(statsData);
-        setSystemHealth(healthData);
-      } catch (err) {
-        console.error('Periodic refresh error:', err);
-      }
-    }, 30000); // Refresh every 30 seconds
+      console.log('Periodic refresh disabled — apiClient not configured');
+    }, 30000);
 
     return () => clearInterval(interval);
   }, [isConnected]);
@@ -328,14 +211,10 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
     error,
     isConnected,
     refresh: async () => {
+      if (USE_MOCK_DATA) return;
       try {
         setIsLoading(true);
-        const [statsData, healthData] = await Promise.all([
-          apiClient.getDashboardStats(),
-          apiClient.getSystemHealth(),
-        ]);
-        setStats(statsData);
-        setSystemHealth(healthData);
+        console.log('Manual refresh disabled — apiClient not configured');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to refresh data');
       } finally {

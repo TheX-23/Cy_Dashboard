@@ -87,9 +87,7 @@ export const KPICards: React.FC<KPICardsProps> = React.memo(({ data }) => {
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className={cn(
             "p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300",
-            isDarkMode 
-              ? "bg-[#111827] border border-gray-700" 
-              : "bg-white border border-gray-200"
+            "bg-card text-card-foreground border border-border"
           )}
         >
           <div className="flex items-center justify-between mb-4">
@@ -108,10 +106,10 @@ export const KPICards: React.FC<KPICardsProps> = React.memo(({ data }) => {
           </div>
           
           <div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               {card.value}
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-muted-foreground">
               {card.title}
             </div>
           </div>

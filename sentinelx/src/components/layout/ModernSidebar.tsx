@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
+import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils/cn";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,10 +16,7 @@ import {
   Settings,
   Workflow,
   Menu,
-  X,
   ChevronRight,
-  Sparkles,
-  Bell,
   LogOut,
   Sun,
   Moon,
@@ -42,8 +40,6 @@ export function ModernSidebar() {
   const [isHovering, setIsHovering] = useState(false);
   const [hoverIntent, setHoverIntent] = useState<NodeJS.Timeout | null>(null);
   const { isDarkMode, toggleTheme } = useTheme();
-
-  const sidebarRef = useRef<HTMLDivElement>(null);
 
   // Handle hover intent with delay
   const handleMouseEnter = () => {
@@ -85,7 +81,6 @@ export function ModernSidebar() {
       localStorage.removeItem('user');
 
       // Clear Zustand auth state
-      const { useAuth } = require('@/hooks/use-auth');
       const { logout } = useAuth.getState();
       logout();
 

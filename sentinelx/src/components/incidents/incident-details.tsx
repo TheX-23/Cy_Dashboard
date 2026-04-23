@@ -33,7 +33,7 @@ export function IncidentDetails({
       case 'HIGH': return 'text-orange-400 bg-orange-500/10 border-orange-500/20';
       case 'MEDIUM': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       case 'LOW': return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20';
-      default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+      default: return 'text-muted-foreground bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -43,8 +43,8 @@ export function IncidentDetails({
       case 'INVESTIGATING': return 'text-yellow-400';
       case 'CONTAINED': return 'text-blue-400';
       case 'RESOLVED': return 'text-green-400';
-      case 'CLOSED': return 'text-slate-400';
-      default: return 'text-slate-400';
+      case 'CLOSED': return 'text-muted-foreground';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -84,12 +84,12 @@ export function IncidentDetails({
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="relative ml-auto h-full w-full max-w-5xl bg-black/95 border-l border-green-500/30 shadow-2xl">
+      <div className="relative ml-auto h-full w-full max-w-5xl bg-background text-foreground border-l border-border shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-green-500/20">
           <div className="flex items-center gap-4">
@@ -101,35 +101,35 @@ export function IncidentDetails({
               {incident.severity}
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-white">{incident.title}</h2>
-              <p className="text-sm text-slate-400">{incident.id}</p>
+              <h2 className="text-xl font-semibold text-foreground">{incident.title}</h2>
+              <p className="text-sm text-muted-foreground">{incident.id}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab(activeTab === 'raw' ? 'overview' : 'raw')}
-              className="p-2 text-slate-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
               title={activeTab === 'raw' ? 'View Details' : 'View Raw JSON'}
             >
               {activeTab === 'raw' ? <FileText className="h-4 w-4" /> : <FileJson className="h-4 w-4" />}
             </button>
             <button
               onClick={() => copyToClipboard(JSON.stringify(incident, null, 2))}
-              className="p-2 text-slate-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
               title="Copy incident data"
             >
               <Copy className="h-4 w-4" />
             </button>
             <button
               onClick={() => exportIncident('json')}
-              className="p-2 text-slate-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
               title="Export as JSON"
             >
               <Download className="h-4 w-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
+              className="p-2 text-muted-foreground hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -154,7 +154,7 @@ export function IncidentDetails({
                 "px-6 py-3 text-sm font-medium transition-colors",
                 activeTab === tab.id 
                   ? "text-green-400 border-b-2 border-green-400 bg-green-500/5" 
-                  : "text-slate-400 hover:text-green-400 hover:bg-green-500/10"
+                  : "text-muted-foreground hover:text-green-400 hover:bg-green-500/10"
               )}
             >
               {tab.label}
@@ -171,11 +171,11 @@ export function IncidentDetails({
                 <h3 className="text-lg font-semibold text-green-400">Basic Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400">Incident ID</label>
-                    <p className="text-sm text-white font-mono">{incident.id}</p>
+                    <label className="text-xs text-muted-foreground">Incident ID</label>
+                    <p className="text-sm text-foreground font-mono">{incident.id}</p>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Status</label>
+                    <label className="text-xs text-muted-foreground">Status</label>
                     <div className="flex items-center gap-2">
                       <span className={cn("text-sm font-medium", getStatusColor(incident.status))}>
                         {incident.status}
@@ -183,7 +183,7 @@ export function IncidentDetails({
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Severity</label>
+                    <label className="text-xs text-muted-foreground">Severity</label>
                     <div className={cn(
                       "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border",
                       getSeverityColor(incident.severity)
@@ -192,7 +192,7 @@ export function IncidentDetails({
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Impact</label>
+                    <label className="text-xs text-muted-foreground">Impact</label>
                     <div className={cn(
                       "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border",
                       getSeverityColor(incident.impact)
@@ -201,21 +201,21 @@ export function IncidentDetails({
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Created At</label>
-                    <p className="text-sm text-white">
+                    <label className="text-xs text-muted-foreground">Created At</label>
+                    <p className="text-sm text-foreground">
                       {incident.createdAt.toLocaleString()}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-muted-foreground">
                       {formatDistanceToNowStrict(incident.createdAt, { addSuffix: true })}
                     </p>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Assigned To</label>
+                    <label className="text-xs text-muted-foreground">Assigned To</label>
                     <div className="flex items-center gap-2">
                       {incident.assignedTo ? (
                         <>
-                          <User className="h-4 w-4 text-slate-400" />
-                          <span className="text-sm text-white">{incident.assignedToName || incident.assignedTo}</span>
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm text-foreground">{incident.assignedToName || incident.assignedTo}</span>
                         </>
                       ) : (
                         <span className="text-sm text-slate-500">Unassigned</span>
@@ -223,7 +223,7 @@ export function IncidentDetails({
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Risk Score</label>
+                    <label className="text-xs text-muted-foreground">Risk Score</label>
                     <div className="mt-1">
                       <span className={cn(
                         "text-lg font-bold",
@@ -236,9 +236,9 @@ export function IncidentDetails({
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Priority</label>
+                    <label className="text-xs text-muted-foreground">Priority</label>
                     <div className="mt-1">
-                      <span className="text-lg font-bold text-white">
+                      <span className="text-lg font-bold text-foreground">
                         #{incident.priority}
                       </span>
                     </div>
@@ -249,8 +249,8 @@ export function IncidentDetails({
               {/* Description */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-green-400">Description</h3>
-                <div className="bg-black/50 rounded-lg p-4 border border-green-500/20">
-                  <p className="text-sm text-white">{incident.description}</p>
+                <div className="bg-card text-card-foreground border border-border">
+                  <p className="text-sm text-foreground">{incident.description}</p>
                 </div>
               </div>
 
@@ -259,15 +259,15 @@ export function IncidentDetails({
                 <h3 className="text-lg font-semibold text-green-400">Affected Assets</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {incident.affectedAssets.map((asset, index) => (
-                    <div key={asset.id} className="bg-black/50 rounded-lg p-4 border border-green-500/20">
+                    <div key={asset.id} className="bg-card text-card-foreground border border-border">
                       <div className="flex items-center gap-2 mb-2">
                         <Activity className="h-4 w-4 text-green-400" />
-                        <span className="text-sm font-medium text-white">{asset.name}</span>
+                        <span className="text-sm font-medium text-foreground">{asset.name}</span>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-xs text-slate-400">Type: <span className="text-white">{asset.type}</span></p>
-                        {asset.ip && <p className="text-xs text-slate-400">IP: <span className="text-white font-mono">{asset.ip}</span></p>}
-                        {asset.location && <p className="text-xs text-slate-400">Location: <span className="text-white">{asset.location}</span></p>}
+                        <p className="text-xs text-muted-foreground">Type: <span className="text-foreground">{asset.type}</span></p>
+                        {asset.ip && <p className="text-xs text-muted-foreground">IP: <span className="text-foreground font-mono">{asset.ip}</span></p>}
+                        {asset.location && <p className="text-xs text-muted-foreground">Location: <span className="text-foreground">{asset.location}</span></p>}
                       </div>
                     </div>
                   ))}
@@ -281,7 +281,7 @@ export function IncidentDetails({
                   {incident.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-black/50 text-green-400 border border-green-500/30"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-card text-green-400 border border-green-500/30"
                     >
                       <Tag className="h-3 w-3" />
                       {tag}
@@ -297,9 +297,9 @@ export function IncidentDetails({
               <h3 className="text-lg font-semibold text-green-400 mb-4">Linked Alerts</h3>
               <div className="space-y-2">
                 {incident.linkedAlerts.map((alertId, index) => (
-                  <div key={alertId} className="bg-black/50 rounded-lg p-3 border border-green-500/20">
+                  <div key={alertId} className="bg-card rounded-lg p-3 border border-green-500/20">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-white font-mono">{alertId}</span>
+                      <span className="text-sm text-foreground font-mono">{alertId}</span>
                       <ChevronRight className="h-4 w-4 text-green-400" />
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export function IncidentDetails({
               <h3 className="text-lg font-semibold text-green-400 mb-4">Incident Timeline</h3>
               <div className="space-y-3">
                 {incident.timeline.map((event) => (
-                  <div key={event.id} className="bg-black/50 rounded-lg p-4 border border-green-500/20">
+                  <div key={event.id} className="bg-card text-card-foreground border border-border">
                     <div className="flex items-start gap-3">
                       <div className={cn(
                         "w-2 h-2 rounded-full mt-1",
@@ -323,9 +323,9 @@ export function IncidentDetails({
                         event.type === 'note_added' ? 'bg-green-400' : 'bg-purple-400'
                       )}></div>
                       <div>
-                        <p className="text-sm text-white font-medium">{event.title}</p>
-                        <p className="text-xs text-slate-400 mt-1">{event.description}</p>
-                        <p className="text-xs text-slate-400 mt-2">
+                        <p className="text-sm text-foreground font-medium">{event.title}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{event.description}</p>
+                        <p className="text-xs text-muted-foreground mt-2">
                           {event.author} • {formatDistanceToNowStrict(event.timestamp, { addSuffix: true })}
                         </p>
                       </div>
@@ -339,8 +339,8 @@ export function IncidentDetails({
           {activeTab === 'logs' && (
             <div className="p-6 space-y-4">
               <h3 className="text-lg font-semibold text-green-400 mb-4">Related Logs</h3>
-              <div className="bg-black/50 rounded-lg p-4 border border-green-500/20">
-                <p className="text-sm text-slate-400">
+              <div className="bg-card text-card-foreground border border-border">
+                <p className="text-sm text-muted-foreground">
                   Integration with Log Explorer - Click to view detailed logs related to this incident.
                 </p>
                 <button className="mt-3 px-4 py-2 bg-green-500 text-black rounded-lg hover:bg-green-400 transition-colors text-sm font-medium">
@@ -362,7 +362,7 @@ export function IncidentDetails({
                     placeholder="Add a note or comment..."
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-black/50 border border-green-500/30 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
+                    className="flex-1 px-3 py-2 bg-card border border-green-500/30 rounded-lg text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddNote()}
                   />
                   <button
@@ -377,22 +377,22 @@ export function IncidentDetails({
               {/* Notes History */}
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {incident.notes.map((note) => (
-                  <div key={note.id} className="bg-black/50 rounded-lg p-4 border border-green-500/20">
+                  <div key={note.id} className="bg-card text-card-foreground border border-border">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="text-sm text-white">{note.content}</p>
-                        <p className="text-xs text-slate-400 mt-2">
+                        <p className="text-sm text-foreground">{note.content}</p>
+                        <p className="text-xs text-muted-foreground mt-2">
                           {note.author} • {formatDistanceToNowStrict(note.timestamp, { addSuffix: true })}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setEditingNote(note.id)}
-                          className="p-1 text-slate-400 hover:text-green-400 transition-colors"
+                          className="p-1 text-muted-foreground hover:text-green-400 transition-colors"
                         >
                           <Edit className="h-3 w-3" />
                         </button>
-                        <button className="p-1 text-slate-400 hover:text-red-400 transition-colors">
+                        <button className="p-1 text-muted-foreground hover:text-red-400 transition-colors">
                           <Trash2 className="h-3 w-3" />
                         </button>
                       </div>
@@ -418,19 +418,19 @@ export function IncidentDetails({
                 <label htmlFor="evidence-upload" className="cursor-pointer">
                   <Plus className="h-8 w-8 text-green-400 mx-auto mb-2" />
                   <p className="text-sm text-green-400">Click to upload evidence</p>
-                  <p className="text-xs text-slate-400 mt-1">Screenshots, logs, files</p>
+                  <p className="text-xs text-muted-foreground mt-1">Screenshots, logs, files</p>
                 </label>
               </div>
 
               {/* Evidence List */}
               <div className="space-y-3">
                 {incident.evidence.map((evidence) => (
-                  <div key={evidence.id} className="bg-black/50 rounded-lg p-4 border border-green-500/20">
+                  <div key={evidence.id} className="bg-card text-card-foreground border border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-white font-medium">{evidence.name}</p>
-                        <p className="text-xs text-slate-400">{evidence.description}</p>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-sm text-foreground font-medium">{evidence.name}</p>
+                        <p className="text-xs text-muted-foreground">{evidence.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
                           {evidence.uploadedBy} • {formatDistanceToNowStrict(evidence.uploadedAt, { addSuffix: true })}
                         </p>
                       </div>
@@ -438,7 +438,7 @@ export function IncidentDetails({
                         <span className="text-xs px-2 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full">
                           {evidence.type}
                         </span>
-                        <button className="p-1 text-slate-400 hover:text-green-400 transition-colors">
+                        <button className="p-1 text-muted-foreground hover:text-green-400 transition-colors">
                           <Download className="h-4 w-4" />
                         </button>
                       </div>
@@ -452,7 +452,7 @@ export function IncidentDetails({
           {activeTab === 'raw' && (
             <div className="p-6">
               <h3 className="text-lg font-semibold text-green-400 mb-4">Raw JSON Data</h3>
-              <div className="bg-black/50 rounded-lg p-4 border border-green-500/20">
+              <div className="bg-card text-card-foreground border border-border">
                 <pre className="text-sm text-green-400 overflow-x-auto">
                   {JSON.stringify(incident, null, 2)}
                 </pre>
@@ -473,7 +473,7 @@ export function IncidentDetails({
               </button>
               <button
                 onClick={() => {/* TODO: Implement escalation */}}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-400 transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-red-500 text-foreground rounded-lg hover:bg-red-400 transition-colors text-sm font-medium"
               >
                 Escalate
               </button>
@@ -484,8 +484,8 @@ export function IncidentDetails({
                 Resolve
               </button>
             </div>
-            <div className="text-sm text-slate-400">
-              Risk Score: <span className="text-white font-bold">{incident.riskScore}/100</span>
+            <div className="text-sm text-muted-foreground">
+              Risk Score: <span className="text-foreground font-bold">{incident.riskScore}/100</span>
             </div>
           </div>
         </div>

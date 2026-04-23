@@ -53,6 +53,7 @@ export interface LogAnalytics {
   logsPerMinute: Array<{ time: string; count: number; errors: number }>;
   errorRate: number;
   topSources: Array<{ source: LogSource; count: number }>;
+  responseTimeBySource: Array<{ source: LogSource; avgTime: number; maxTime: number; count: number }>;
   eventDistribution: Array<{ type: EventType; count: number }>;
   totalLogs: number;
   criticalLogs: number;

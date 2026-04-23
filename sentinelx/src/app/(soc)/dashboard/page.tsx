@@ -208,9 +208,9 @@ export default function DashboardPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex w-full shrink-0 flex-col rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+            className="flex w-full shrink-0 flex-col rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
           >
-            <h2 className="mb-4 shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 className="mb-4 shrink-0 text-lg font-semibold text-foreground">
               Threat Trends
             </h2>
             <div className="h-[300px] w-full min-w-0 sm:h-[320px]">
@@ -224,9 +224,9 @@ export default function DashboardPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex h-[360px] min-w-0 flex-col rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+              className="flex h-[360px] min-w-0 flex-col rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
             >
-              <h3 className="mb-3 shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="mb-3 shrink-0 text-lg font-semibold text-foreground">
                 Threat Distribution
               </h3>
               <div className="min-h-[280px] w-full min-w-0 flex-1 overflow-visible">
@@ -238,9 +238,9 @@ export default function DashboardPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex h-[360px] min-w-0 flex-col rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+              className="flex h-[360px] min-w-0 flex-col rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
             >
-              <h3 className="mb-3 shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="mb-3 shrink-0 text-lg font-semibold text-foreground">
                 Top Attacking IPs
               </h3>
               <div className="min-h-[280px] w-full min-w-0 flex-1">
@@ -256,9 +256,9 @@ export default function DashboardPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex min-w-0 flex-col rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+            className="flex min-w-0 flex-col rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
           >
-            <h3 className="mb-4 shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 className="mb-4 shrink-0 text-lg font-semibold text-foreground">
               Global Threat Map
             </h3>
             <div className="h-[min(320px,50vh)] min-h-[260px] w-full overflow-hidden rounded-lg">
@@ -270,9 +270,9 @@ export default function DashboardPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex h-[360px] min-w-0 flex-col rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+            className="flex h-[360px] min-w-0 flex-col rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
           >
-            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Recent Alerts</h3>
+            <h3 className="mb-4 text-lg font-semibold text-foreground">Recent Alerts</h3>
             <div className="min-h-0 flex-1">
               <AlertsFeed alerts={mockAlerts} />
             </div>
@@ -285,9 +285,9 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.35 }}
-        className="mt-6 w-full rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6"
+        className="mt-6 w-full rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
       >
-        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">System Health</h3>
+        <h3 className="mb-4 text-lg font-semibold text-foreground">System Health</h3>
         <SystemHealth data={mockSystemHealth} layout="wide" />
       </motion.div>
 
@@ -298,8 +298,8 @@ export default function DashboardPage() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mt-6"
       >
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-[#111827] sm:p-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Active Incidents</h3>
+        <div className="rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6">
+          <h3 className="mb-4 text-lg font-semibold text-foreground">Active Incidents</h3>
           <IncidentsList incidents={mockIncidents} />
         </div>
       </motion.div>

@@ -28,8 +28,8 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-800 border border-gray-600 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-2">{`Time: ${label}`}</p>
+        <div className="bg-card border border-border rounded-lg p-3">
+          <p className="text-xs text-muted-foreground mb-2">{`Time: ${label}`}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-xs" style={{ color: entry.color }}>
               {`${entry.name}: ${entry.value ?? 0}`}
@@ -72,11 +72,11 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
       {/* KPI Cards */}
       <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active Workflows */}
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Active Workflows</p>
-              <p className="text-2xl font-semibold text-white mt-1">{dashboard.activeWorkflows}</p>
+              <p className="text-xs text-muted-foreground">Active Workflows</p>
+              <p className="text-2xl font-semibold text-foreground mt-1">{dashboard.activeWorkflows}</p>
             </div>
             <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
               <Play className="h-6 w-6 text-green-400" />
@@ -85,11 +85,11 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
         </div>
 
         {/* Total Executions */}
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Total Executions</p>
-              <p className="text-2xl font-semibold text-white mt-1">{dashboard.totalExecutions.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">Total Executions</p>
+              <p className="text-2xl font-semibold text-foreground mt-1">{dashboard.totalExecutions.toLocaleString()}</p>
             </div>
             <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
               <Activity className="h-6 w-6 text-blue-400" />
@@ -98,10 +98,10 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
         </div>
 
         {/* Success Rate */}
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Success Rate</p>
+              <p className="text-xs text-muted-foreground">Success Rate</p>
               <p className="text-2xl font-semibold text-green-400 mt-1">{dashboard.successRate.toFixed(1)}%</p>
             </div>
             <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
@@ -111,10 +111,10 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
         </div>
 
         {/* Avg Execution Time */}
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Avg Execution Time</p>
+              <p className="text-xs text-muted-foreground">Avg Execution Time</p>
               <p className="text-2xl font-semibold text-cyan-400 mt-1">
                 {Math.round(dashboard.averageExecutionTime / 1000)}s
               </p>
@@ -128,8 +128,8 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
 
       {/* Main Chart Section */}
       <div className="col-span-12">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm">
-          <h3 className="text-lg font-semibold text-white mb-4">Execution Trend (24h)</h3>
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Execution Trend (24h)</h3>
           <div className="h-[300px] w-full overflow-hidden">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 400, height: 300 }} debounce={50}>
               <LineChart data={executionTrendData}>
@@ -174,18 +174,18 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
 
       {/* Workflow Performance Cards */}
       <div className="col-span-6 h-full">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
-          <h3 className="text-lg font-semibold text-white mb-4">Most Executed Workflows</h3>
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Most Executed Workflows</h3>
           <div className="space-y-3">
             {workflowPerformanceData.slice(0, 5).map((workflow, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-white truncate">{workflow.name}</p>
-                  <p className="text-xs text-gray-400">{workflow.executions} executions</p>
+                  <p className="text-sm font-medium text-foreground truncate">{workflow.name}</p>
+                  <p className="text-xs text-muted-foreground">{workflow.executions} executions</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-green-400">{workflow.successRate}%</p>
-                  <p className="text-xs text-gray-400">success rate</p>
+                  <p className="text-xs text-muted-foreground">success rate</p>
                 </div>
               </div>
             ))}
@@ -194,20 +194,20 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
       </div>
 
       <div className="col-span-6 h-full">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
-          <h3 className="text-lg font-semibold text-white mb-4">Highest Success Rate</h3>
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Highest Success Rate</h3>
           <div className="space-y-3">
             {workflowPerformanceData
               .sort((a, b) => b.successRate - a.successRate)
               .slice(0, 5).map((workflow, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-white truncate">{workflow.name}</p>
-                  <p className="text-xs text-gray-400">{workflow.avgTime}s avg time</p>
+                  <p className="text-sm font-medium text-foreground truncate">{workflow.name}</p>
+                  <p className="text-xs text-muted-foreground">{workflow.avgTime}s avg time</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-green-400">{workflow.successRate}%</p>
-                  <p className="text-xs text-gray-400">success rate</p>
+                  <p className="text-xs text-muted-foreground">success rate</p>
                 </div>
               </div>
             ))}
@@ -217,81 +217,81 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
 
       {/* Bottom Stats */}
       <div className="col-span-3">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
               <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white">Efficiency</h4>
-              <p className="text-xs text-gray-400">Overall performance</p>
+              <h4 className="text-lg font-semibold text-foreground">Efficiency</h4>
+              <p className="text-xs text-muted-foreground">Overall performance</p>
             </div>
           </div>
           <div className="text-2xl font-bold text-green-400 mb-1">
             {dashboard.successRate.toFixed(1)}%
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground">
             +2.3% from last week
           </div>
         </div>
       </div>
 
       <div className="col-span-3">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
               <Activity className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white">Performance</h4>
-              <p className="text-xs text-gray-400">Execution speed</p>
+              <h4 className="text-lg font-semibold text-foreground">Performance</h4>
+              <p className="text-xs text-muted-foreground">Execution speed</p>
             </div>
           </div>
           <div className="text-2xl font-bold text-blue-400 mb-1">
             {Math.round(dashboard.averageExecutionTime / 1000)}s
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground">
             Average execution time
           </div>
         </div>
       </div>
 
       <div className="col-span-3">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
               <Zap className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white">Activity</h4>
-              <p className="text-xs text-gray-400">Daily executions</p>
+              <h4 className="text-lg font-semibold text-foreground">Activity</h4>
+              <p className="text-xs text-muted-foreground">Daily executions</p>
             </div>
           </div>
           <div className="text-2xl font-bold text-purple-400 mb-1">
             {dashboard.totalExecutions.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground">
             Total executions today
           </div>
         </div>
       </div>
 
       <div className="col-span-3">
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm h-full">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm h-full">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
               <AlertTriangle className="w-5 h-5 text-orange-400" />
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white">Health</h4>
-              <p className="text-xs text-gray-400">System status</p>
+              <h4 className="text-lg font-semibold text-foreground">Health</h4>
+              <p className="text-xs text-muted-foreground">System status</p>
             </div>
           </div>
           <div className="text-2xl font-bold text-orange-400 mb-1">
             {dashboard.successRate > 90 ? 'Healthy' : 
              dashboard.successRate > 70 ? 'Warning' : 'Critical'}
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground">
             System health check
           </div>
         </div>
