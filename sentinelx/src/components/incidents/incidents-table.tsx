@@ -99,22 +99,22 @@ export function IncidentsTable({
   }
 
   return (
-    <div className="bg-[#111827] border border-gray-700 rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
       {/* Table Header */}
-      <div className="border-b border-gray-700 p-4">
-        <h3 className="text-lg font-semibold text-white">Security Incidents</h3>
-        <p className="text-sm text-gray-400 mt-1">{incidents.length.toLocaleString()} incidents found</p>
+      <div className="border-b border-border p-4">
+        <h3 className="text-lg font-semibold text-foreground">Security Incidents</h3>
+        <p className="text-sm text-muted-foreground mt-1">{incidents.length.toLocaleString()} incidents found</p>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-800 border-b border-gray-700">
+          <thead className="bg-secondary dark:bg-gray-800 border-b border-border">
             <tr>
               <th className="px-4 py-3 text-left">
                 <button
                   onClick={() => handleSort('id')}
-                  className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ID
                   {sortConfig?.key === 'id' && (
@@ -127,7 +127,7 @@ export function IncidentsTable({
               <th className="px-4 py-3 text-left">
                 <button
                   onClick={() => handleSort('title')}
-                  className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Title
                   {sortConfig?.key === 'title' && (
@@ -140,7 +140,7 @@ export function IncidentsTable({
               <th className="px-4 py-3 text-left">
                 <button
                   onClick={() => handleSort('severity')}
-                  className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Severity
                   {sortConfig?.key === 'severity' && (
@@ -153,7 +153,7 @@ export function IncidentsTable({
               <th className="px-4 py-3 text-left">
                 <button
                   onClick={() => handleSort('status')}
-                  className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Status
                   {sortConfig?.key === 'status' && (
@@ -166,7 +166,7 @@ export function IncidentsTable({
               <th className="px-4 py-3 text-left">
                 <button
                   onClick={() => handleSort('createdAt')}
-                  className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Created
                   {sortConfig?.key === 'createdAt' && (
@@ -176,10 +176,10 @@ export function IncidentsTable({
                   )}
                 </button>
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300">Assigned To</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300">Assets</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-300">Alerts</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-300">Actions</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Assigned To</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Assets</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground">Alerts</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -187,18 +187,18 @@ export function IncidentsTable({
               <tr
                 key={incident.id}
                 className={cn(
-                  "border-b border-gray-800 hover:bg-gray-800/50 transition-colors cursor-pointer",
-                  selectedIncidentId === incident.id && "bg-gray-800 border-gray-600"
+                  "border-b border-border hover:bg-secondary/50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer",
+                  selectedIncidentId === incident.id && "bg-secondary dark:bg-gray-800 border-border"
                 )}
                 onClick={() => onIncidentSelect(incident.id)}
               >
                 <td className="px-4 py-3">
-                  <span className="text-sm text-white font-mono">{incident.id}</span>
+                  <span className="text-sm text-foreground font-mono">{incident.id}</span>
                 </td>
                 <td className="px-4 py-3">
                   <div>
-                    <p className="text-sm text-white font-medium">{incident.title}</p>
-                    <p className="text-xs text-slate-400 truncate max-w-xs" title={incident.description}>
+                    <p className="text-sm text-foreground font-medium">{incident.title}</p>
+                    <p className="text-xs text-muted-foreground truncate max-w-xs" title={incident.description}>
                       {incident.description}
                     </p>
                   </div>
@@ -221,10 +221,10 @@ export function IncidentsTable({
                 </td>
                 <td className="px-4 py-3">
                   <div>
-                    <p className="text-sm text-white">
+                    <p className="text-sm text-foreground">
                       {incident.createdAt.toLocaleString()}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-muted-foreground">
                       {formatDistanceToNowStrict(incident.createdAt, { addSuffix: true })}
                     </p>
                   </div>
@@ -232,23 +232,23 @@ export function IncidentsTable({
                 <td className="px-4 py-3">
                   {incident.assignedTo ? (
                     <div className="flex items-center gap-2">
-                      <User className="h-3 w-3 text-slate-400" />
-                      <span className="text-sm text-white">{incident.assignedToName || incident.assignedTo}</span>
+                      <User className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-foreground">{incident.assignedToName || incident.assignedTo}</span>
                     </div>
                   ) : (
-                    <span className="text-sm text-slate-500">Unassigned</span>
+                    <span className="text-sm text-muted-foreground">Unassigned</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <Activity className="h-3 w-3 text-slate-400" />
-                    <span className="text-sm text-white">{incident.affectedAssets.length}</span>
+                    <Activity className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-sm text-foreground">{incident.affectedAssets.length}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-3 w-3 text-slate-400" />
-                    <span className="text-sm text-white">{incident.linkedAlerts.length}</span>
+                    <AlertTriangle className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-sm text-foreground">{incident.linkedAlerts.length}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3">

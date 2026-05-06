@@ -138,7 +138,7 @@ export default function IncidentsPage() {
                 className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors transform-gpu ${
                   isLive
                     ? "bg-green-500/20 text-green-400 border border-green-500"
-                    : "bg-gray-700 text-gray-300"
+                    : "bg-secondary dark:bg-gray-700 text-muted-foreground border border-border"
                 }`}
               >
                 {isLive ? (
@@ -157,7 +157,7 @@ export default function IncidentsPage() {
               {/* Refresh */}
               <button
                 onClick={refreshIncidents}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-secondary dark:bg-gray-800 hover:bg-accent text-foreground border border-border rounded-lg transition-colors"
               >
                 <RotateCcw className="h-4 w-4" />
                 Refresh
@@ -202,8 +202,8 @@ export default function IncidentsPage() {
             className="w-full h-full transform-gpu"
           >
             {analytics ? <IncidentAnalytics analytics={analytics} /> : (
-              <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full h-[300px] flex items-center justify-center">
-                <div className="text-gray-400">Loading analytics...</div>
+              <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full h-[300px] flex items-center justify-center">
+                <div className="text-muted-foreground">Loading analytics...</div>
               </div>
             )}
           </motion.div>
@@ -212,74 +212,74 @@ export default function IncidentsPage() {
         {/* Stats Cards Section */}
         <div className="col-span-4 w-full">
           <div className="grid grid-cols-2 gap-4 w-full">
-            <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full">
+            <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
                   <AlertTriangle className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-white">Critical</h4>
-                  <p className="text-xs text-gray-400">High priority</p>
+                  <h4 className="text-lg font-semibold text-foreground">Critical</h4>
+                  <p className="text-xs text-muted-foreground">High priority</p>
                 </div>
               </div>
               <div className="text-2xl font-bold text-green-400 mb-1">
                 {analytics?.criticalIncidents || 0}
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 Need immediate attention
               </div>
             </div>
 
-            <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full">
+            <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
                   <Bell className="w-5 h-5 text-orange-400" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-white">Escalated</h4>
-                  <p className="text-xs text-gray-400">Requires escalation</p>
+                  <h4 className="text-lg font-semibold text-foreground">Escalated</h4>
+                  <p className="text-xs text-muted-foreground">Requires escalation</p>
                 </div>
               </div>
               <div className="text-2xl font-bold text-orange-400 mb-1">
                 {analytics?.openIncidents || 0}
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 Currently being investigated
               </div>
             </div>
 
-            <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full">
+            <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
                   <Play className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-white">In Progress</h4>
-                  <p className="text-xs text-gray-400">Currently being handled</p>
+                  <h4 className="text-lg font-semibold text-foreground">In Progress</h4>
+                  <p className="text-xs text-muted-foreground">Currently being handled</p>
                 </div>
               </div>
               <div className="text-2xl font-bold text-blue-400 mb-1">
                 {analytics?.openIncidents || 0}
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 Being investigated
               </div>
             </div>
 
-            <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full">
+            <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
                   <RotateCcw className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-white">Resolved</h4>
-                  <p className="text-xs text-gray-400">Successfully closed</p>
+                  <h4 className="text-lg font-semibold text-foreground">Resolved</h4>
+                  <p className="text-xs text-muted-foreground">Successfully closed</p>
                 </div>
               </div>
               <div className="text-2xl font-bold text-purple-400 mb-1">
                 {analytics ? Math.floor((analytics.resolutionRate || 0) * (analytics.totalIncidents || 0) / 100) || 0 : 0}
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 This week
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function IncidentsPage() {
         {/* Live Incidents Feed */}
         {isLive && (
           <div className="col-span-12 w-full">
-            <div className="bg-[#111827] border border-green-500/30 rounded-xl p-5 shadow-sm w-full">
+            <div className="bg-card border border-green-500/30 rounded-xl p-5 shadow-sm w-full">
               <h3 className="text-lg font-semibold text-green-400 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 Live Incidents Feed
@@ -301,11 +301,11 @@ export default function IncidentsPage() {
                   </div>
                 ) : (
                   liveIncidents.map((incident) => (
-                    <div key={incident.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700 w-full">
+                    <div key={incident.id} className="bg-secondary dark:bg-gray-800 rounded-lg p-4 border border-border w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h4 className="text-white font-medium">{incident.title}</h4>
-                          <p className="text-gray-400 text-sm mt-1">{incident.description}</p>
+                          <h4 className="text-foreground font-medium">{incident.title}</h4>
+                          <p className="text-muted-foreground text-sm mt-1">{incident.description}</p>
                         </div>
                         <div className="text-right ml-4">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -329,24 +329,24 @@ export default function IncidentsPage() {
 
         {/* Top Incident Types */}
         <div className="col-span-12 w-full">
-          <div className="bg-[#111827] border border-gray-700 rounded-xl p-5 shadow-sm w-full">
-            <h3 className="text-lg font-semibold text-white mb-4">Top Incident Types</h3>
+          <div className="bg-card border border-border rounded-xl p-5 shadow-sm w-full">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Top Incident Types</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
-              <div className="text-center p-4 bg-gray-800 rounded-lg w-full">
+              <div className="text-center p-4 bg-secondary dark:bg-gray-800 rounded-lg w-full">
                 <div className="text-2xl font-bold text-red-400 mb-2">Malware</div>
-                <div className="text-sm text-gray-400">42 incidents</div>
+                <div className="text-sm text-muted-foreground">42 incidents</div>
               </div>
-              <div className="text-center p-4 bg-gray-800 rounded-lg w-full">
+              <div className="text-center p-4 bg-secondary dark:bg-gray-800 rounded-lg w-full">
                 <div className="text-2xl font-bold text-orange-400 mb-2">Phishing</div>
-                <div className="text-sm text-gray-400">38 incidents</div>
+                <div className="text-sm text-muted-foreground">38 incidents</div>
               </div>
-              <div className="text-center p-4 bg-gray-800 rounded-lg w-full">
+              <div className="text-center p-4 bg-secondary dark:bg-gray-800 rounded-lg w-full">
                 <div className="text-2xl font-bold text-yellow-400 mb-2">DDoS</div>
-                <div className="text-sm text-gray-400">25 incidents</div>
+                <div className="text-sm text-muted-foreground">25 incidents</div>
               </div>
-              <div className="text-center p-4 bg-gray-800 rounded-lg w-full">
+              <div className="text-center p-4 bg-secondary dark:bg-gray-800 rounded-lg w-full">
                 <div className="text-2xl font-bold text-blue-400 mb-2">Injection</div>
-                <div className="text-sm text-gray-400">18 incidents</div>
+                <div className="text-sm text-muted-foreground">18 incidents</div>
               </div>
             </div>
           </div>

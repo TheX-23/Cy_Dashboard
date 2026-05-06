@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { useTheme } from "@/context/ThemeContext";
 
 /* ────────────────────────────────────────────────────────────────
    Types
@@ -70,24 +71,34 @@ function ll2v3(lat: number, lon: number, r: number): THREE.Vector3 {
   );
 }
 
-function makeEarthTexture(): THREE.CanvasTexture {
+function makeEarthTexture(theme: string): THREE.CanvasTexture {
   const W = 2048, H = 1024;
   const c = document.createElement("canvas");
   c.width = W; c.height = H;
   const ctx = c.getContext("2d")!;
 
+  const isLight = theme === 'light';
+
   // Ocean
   const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0,   "#0c1445");
-  g.addColorStop(0.2, "#1e3a6e");
-  g.addColorStop(0.5, "#0e2954");
-  g.addColorStop(0.8, "#1e3a6e");
-  g.addColorStop(1,   "#0c1445");
+  if (isLight) {
+    g.addColorStop(0,   "#dbeafe");
+    g.addColorStop(0.2, "#bfdbfe");
+    g.addColorStop(0.5, "#93c5fd");
+    g.addColorStop(0.8, "#bfdbfe");
+    g.addColorStop(1,   "#dbeafe");
+  } else {
+    g.addColorStop(0,   "#0c1445");
+    g.addColorStop(0.2, "#1e3a6e");
+    g.addColorStop(0.5, "#0e2954");
+    g.addColorStop(0.8, "#1e3a6e");
+    g.addColorStop(1,   "#0c1445");
+  }
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
 
   // Continents (rough)
-  ctx.fillStyle = "#1a5c32";
+  ctx.fillStyle = isLight ? "#86efac" : "#1a5c32";
   ctx.fillRect(280, 180, 280, 200);  // N. America
   ctx.fillRect(400, 420, 160, 250);  // S. America
   ctx.fillRect(900, 160, 200, 150);  // Europe
@@ -95,13 +106,13 @@ function makeEarthTexture(): THREE.CanvasTexture {
   ctx.fillRect(1100, 120, 500, 300); // Asia
   ctx.fillRect(1500, 480, 220, 140); // Australia
 
-  ctx.fillStyle = "#24784a";
+  ctx.fillStyle = isLight ? "#4ade80" : "#24784a";
   ctx.fillRect(310, 220, 200, 100);
   ctx.fillRect(1150, 180, 350, 180);
   ctx.fillRect(950, 380, 140, 180);
 
   // Grid
-  ctx.strokeStyle = "rgba(56,189,248,0.06)";
+  ctx.strokeStyle = isLight ? "rgba(14,165,233,0.15)" : "rgba(56,189,248,0.06)";
   ctx.lineWidth = 1;
   for (let y = 0; y < H; y += H / 18) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
   for (let x = 0; x < W; x += W / 36) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
@@ -149,6 +160,8 @@ export default function GlobeThreatMap({
   threats = [],
   attackLines = [],
 }: GlobeThreatMapProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const containerRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{
     scene: THREE.Scene;
@@ -269,7 +282,8 @@ export default function GlobeThreatMap({
 
       // Scene
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0f1e);
+      // Background is now handled by the parent div's CSS gradient
+      // scene.background = new THREE.Color(isLight ? 0xf8fafc : 0x0a0f1e);
 
       // Camera
       const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 1000);
@@ -278,7 +292,11 @@ export default function GlobeThreatMap({
       // Renderer
       let renderer: THREE.WebGLRenderer;
       try {
-        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer = new THREE.WebGLRenderer({ 
+          antialias: true, 
+          alpha: true,
+          powerPreference: "high-performance" 
+        });
       } catch (err) {
         console.error("WebGL exhausted or unavailable:", err);
         el.innerHTML = "<div style='display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-size:14px;text-align:center;padding:1rem;'>WebGL driver memory exhausted.<br/>Please perform a Hard Refresh (Ctrl+Shift+R or Cmd+Shift+R) to clear your browser cache.</div>";
@@ -289,16 +307,16 @@ export default function GlobeThreatMap({
       el.appendChild(renderer.domElement);
 
       // Lights
-      scene.add(new THREE.AmbientLight(0xffffff, 0.95));
-      const dir = new THREE.DirectionalLight(0xffffff, 0.5);
+      scene.add(new THREE.AmbientLight(0xffffff, isLight ? 1.2 : 0.95));
+      const dir = new THREE.DirectionalLight(0xffffff, isLight ? 0.8 : 0.5);
       dir.position.set(5, 3, 5);
       scene.add(dir);
 
       // Globe
       const globeMat = new THREE.MeshPhongMaterial({
-        map: makeEarthTexture(),
-        shininess: 12,
-        specular: 0x111111,
+        map: makeEarthTexture(theme),
+        shininess: isLight ? 20 : 12,
+        specular: isLight ? 0x222222 : 0x111111,
       });
       const globe = new THREE.Mesh(
         new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64),
@@ -333,18 +351,20 @@ export default function GlobeThreatMap({
         }),
       ));
 
-      // Stars
-      const sv: number[] = [];
-      for (let i = 0; i < 2000; i++) {
-        sv.push(
-          (Math.random() - 0.5) * 300,
-          (Math.random() - 0.5) * 300,
-          (Math.random() - 0.5) * 300,
-        );
+      // Stars (only in dark mode)
+      if (!isLight) {
+        const sv: number[] = [];
+        for (let i = 0; i < 2000; i++) {
+          sv.push(
+            (Math.random() - 0.5) * 300,
+            (Math.random() - 0.5) * 300,
+            (Math.random() - 0.5) * 300,
+          );
+        }
+        const sg = new THREE.BufferGeometry();
+        sg.setAttribute("position", new THREE.Float32BufferAttribute(sv, 3));
+        scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 })));
       }
-      const sg = new THREE.BufferGeometry();
-      sg.setAttribute("position", new THREE.Float32BufferAttribute(sv, 3));
-      scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 })));
 
       // Groups for markers & arcs
       const markers = new THREE.Group();
@@ -362,7 +382,7 @@ export default function GlobeThreatMap({
       controls.minDistance      = 1.5;
       controls.maxDistance      = 5;
       controls.autoRotate      = true;
-      controls.autoRotateSpeed = 0.4;
+      controls.autoRotateSpeed = 1.5;
 
       // ResizeObserver
       const ro = new ResizeObserver((entries) => {
@@ -384,16 +404,18 @@ export default function GlobeThreatMap({
       rebuildMarkers();
       rebuildArcs();
 
-      // Animation
-      const clock = new THREE.Clock();
+      // Animation — use THREE.Timer instead of deprecated THREE.Clock
+      const timer = new THREE.Timer();
+      timer.connect(document);
       const loop = () => {
         const st = stateRef.current;
         if (!st) return;
         st.frameId = requestAnimationFrame(loop);
+        timer.update();
         st.controls.update();
 
         // Pulse markers (factoring in the new shared geometry baseScale)
-        const elapsed = clock.getElapsedTime();
+        const elapsed = timer.getElapsed();
         const pulse = 1 + Math.sin(elapsed * 3) * 0.18;
         st.markers.children.forEach((g) => {
           if (!g.visible) return;
@@ -433,7 +455,7 @@ export default function GlobeThreatMap({
         stateRef.current = null;
       }
     };
-  }, [rebuildMarkers, rebuildArcs]);
+  }, [rebuildMarkers, rebuildArcs, theme, isLight]);
 
   /* ── Re-sync when props change ───────────────────────────── */
   useEffect(() => { rebuildMarkers(); }, [threats, rebuildMarkers]);
@@ -442,15 +464,12 @@ export default function GlobeThreatMap({
   return (
     <div
       ref={containerRef}
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: 300,
-        borderRadius: "0.75rem",
-        overflow: "hidden",
-        cursor: "grab",
-        position: "relative",
-      }}
+      className={`w-full h-full rounded-xl overflow-hidden relative cursor-grab transition-colors duration-500 ${
+        theme === 'light'
+          ? "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300 via-blue-100 to-blue-50"
+          : "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0f1e] to-[#0a0f1e]"
+      }`}
+      style={{ minHeight: 300 }}
     />
   );
 }

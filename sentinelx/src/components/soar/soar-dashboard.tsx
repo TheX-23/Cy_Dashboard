@@ -178,7 +178,7 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
           <h3 className="text-lg font-semibold text-foreground mb-4">Most Executed Workflows</h3>
           <div className="space-y-3">
             {workflowPerformanceData.slice(0, 5).map((workflow, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-secondary dark:bg-gray-800 rounded-lg">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground truncate">{workflow.name}</p>
                   <p className="text-xs text-muted-foreground">{workflow.executions} executions</p>
@@ -200,7 +200,7 @@ export function SOARDashboard({ dashboard }: SOARDashboardProps) {
             {workflowPerformanceData
               .sort((a, b) => b.successRate - a.successRate)
               .slice(0, 5).map((workflow, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-secondary dark:bg-gray-800 rounded-lg">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground truncate">{workflow.name}</p>
                   <p className="text-xs text-muted-foreground">{workflow.avgTime}s avg time</p>

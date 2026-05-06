@@ -225,22 +225,28 @@ export function useLogs(initialFilter: Partial<LogFilter> = {}) {
     }
 
     const now = new Date();
+    const nowMs = now.getTime();
+    // Single-pass bucket approach: O(n) instead of O(n×20)
+    const bucketCounts = new Int32Array(20);
+    const bucketErrors = new Int32Array(20);
+    const windowStart = nowMs - 20 * 60 * 1000;
+
+    for (let i = 0; i < filteredLogs.length; i++) {
+      const logMs = filteredLogs[i].timestamp.getTime();
+      if (logMs < windowStart || logMs > nowMs) continue;
+      const bucketIdx = Math.min(19, Math.floor((logMs - windowStart) / 60000));
+      bucketCounts[bucketIdx]++;
+      if (filteredLogs[i].level === 'ERROR' || filteredLogs[i].level === 'CRITICAL') {
+        bucketErrors[bucketIdx]++;
+      }
+    }
+
     const logsPerMinute = Array.from({ length: 20 }, (_, i) => {
-      const time = new Date(now.getTime() - (19 - i) * 60 * 1000);
-      const count = filteredLogs.filter(log => {
-        const logTime = new Date(log.timestamp);
-        return logTime >= time && logTime < new Date(time.getTime() + 60 * 1000);
-      }).length;
-      const errors = filteredLogs.filter(log => {
-        const logTime = new Date(log.timestamp);
-        return (logTime >= time && logTime < new Date(time.getTime() + 60 * 1000)) &&
-               (log.level === 'ERROR' || log.level === 'CRITICAL');
-      }).length;
-      
+      const time = new Date(windowStart + i * 60 * 1000);
       return {
         time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        count,
-        errors
+        count: bucketCounts[i],
+        errors: bucketErrors[i],
       };
     });
 
