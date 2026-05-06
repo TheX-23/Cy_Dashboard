@@ -1,6 +1,5 @@
 "use client";
 
-import { memo } from 'react';
 
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { LogAnalytics } from '@/types/logs';
@@ -10,7 +9,7 @@ interface LogAnalyticsProps {
   analytics: LogAnalytics;
 }
 
-export const LogAnalytics = memo(function LogAnalytics({ analytics }: LogAnalyticsProps) {
+export function LogAnalytics({ analytics }: LogAnalyticsProps) {
   const getErrorRateColor = (rate: number) => {
     if (rate < 5) return 'text-green-400';
     if (rate < 15) return 'text-yellow-400';
@@ -221,4 +220,3 @@ export const LogAnalytics = memo(function LogAnalytics({ analytics }: LogAnalyti
     </div>
   );
 }
-);

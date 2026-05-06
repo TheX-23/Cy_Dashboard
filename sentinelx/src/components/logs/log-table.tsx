@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { ChevronRight, Globe, User, AlertTriangle, CheckCircle, XCircle, Clock, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Globe, User, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { LogEntry, LogLevel } from '@/types/logs';
 import { cn } from '@/lib/utils/cn';
 
@@ -15,197 +15,87 @@ interface LogTableProps {
 
 const PAGE_SIZE = 50;
 
-/* ── Memoized row to avoid re-rendering every row on parent state changes ── */
-const LogRow = memo(function LogRow({
-  log,
-  isSelected,
-  onSelect,
-}: {
-  log: LogEntry;
-  isSelected: boolean;
-  onSelect: (id: string) => void;
-}) {
-  const getLevelIcon = (level: LogLevel) => {
-    switch (level) {
-      case 'INFO': return <CheckCircle className="h-4 w-4" />;
-      case 'WARN': return <AlertTriangle className="h-4 w-4" />;
-      case 'ERROR': return <XCircle className="h-4 w-4" />;
-      case 'CRITICAL': return <AlertTriangle className="h-4 w-4" />;
-    }
-  };
+const LEVEL_COLORS: Record<LogLevel, string> = {
+  INFO:     'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  WARN:     'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+  ERROR:    'text-orange-400 bg-orange-500/10 border-orange-500/20',
+  CRITICAL: 'text-red-400 bg-red-500/10 border-red-500/20',
+};
 
-  const getLevelColor = (level: LogLevel) => {
-    switch (level) {
-      case 'INFO': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
-      case 'WARN': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-      case 'ERROR': return 'text-orange-400 bg-orange-500/10 border-orange-500/20';
-      case 'CRITICAL': return 'text-red-400 bg-red-500/10 border-red-500/20';
-    }
-  };
+const SOURCE_COLORS: Record<string, string> = {
+  API:      'text-cyan-400',
+  Auth:     'text-purple-400',
+  Firewall: 'text-red-400',
+  System:   'text-green-400',
+  Database: 'text-blue-400',
+  Network:  'text-orange-400',
+};
 
-  const getSourceColor = (source: string) => {
-    const colors: Record<string, string> = {
-      'API': 'text-cyan-400',
-      'Auth': 'text-purple-400',
-      'Firewall': 'text-red-400',
-      'System': 'text-green-400',
-      'Database': 'text-blue-400',
-      'Network': 'text-orange-400'
-    };
-    return colors[source] || 'text-slate-400';
-  };
+const EVENT_COLORS: Record<string, string> = {
+  Login:      'text-blue-400',
+  Attack:     'text-red-400',
+  Request:    'text-green-400',
+  DataAccess: 'text-purple-400',
+  System:     'text-slate-400',
+  Security:   'text-orange-400',
+  Error:      'text-red-400',
+};
 
-  const getEventTypeColor = (eventType: string) => {
-    const colors: Record<string, string> = {
-      'Login': 'text-blue-400',
-      'Attack': 'text-red-400',
-      'Request': 'text-green-400',
-      'DataAccess': 'text-purple-400',
-      'System': 'text-slate-400',
-      'Security': 'text-orange-400',
-      'Error': 'text-red-400'
-    };
-    return colors[eventType] || 'text-slate-400';
-  };
-
-  return (
-    <tr
-      className={cn(
-        "border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors cursor-pointer",
-        isSelected && "bg-cyan-500/5 border-cyan-500/20"
-      )}
-      onClick={() => onSelect(log.id)}
-    >
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Clock className="h-3 w-3 text-slate-400" />
-          <span className="text-sm text-slate-200">
-            {log.timestamp.toLocaleString()}
-          </span>
-        </div>
-        <div className="text-xs text-slate-400">
-          {formatDistanceToNowStrict(log.timestamp, { addSuffix: true })}
-        </div>
-      </td>
-      <td className="px-4 py-3">
-        <div className={cn(
-          "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border",
-          getLevelColor(log.level)
-        )}>
-          {getLevelIcon(log.level)}
-          {log.level}
-        </div>
-      </td>
-      <td className="px-4 py-3">
-        <span className={cn("text-sm font-medium", getSourceColor(log.source))}>
-          {log.source}
-        </span>
-      </td>
-      <td className="px-4 py-3">
-        <span className={cn("text-sm font-medium", getEventTypeColor(log.eventType))}>
-          {log.eventType}
-        </span>
-      </td>
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Globe className="h-3 w-3 text-slate-400" />
-          <span className="text-sm text-slate-200 font-mono">{log.ipAddress}</span>
-        </div>
-        {log.metadata.country && (
-          <div className="text-xs text-slate-400">{log.metadata.country}</div>
-        )}
-      </td>
-      <td className="px-4 py-3">
-        {log.userId ? (
-          <div className="flex items-center gap-2">
-            <User className="h-3 w-3 text-slate-400" />
-            <span className="text-sm text-slate-200">{log.userId}</span>
-          </div>
-        ) : (
-          <span className="text-sm text-slate-500">System</span>
-        )}
-      </td>
-      <td className="px-4 py-3">
-        <div className="max-w-xs">
-          <p className="text-sm text-slate-200 truncate" title={log.message}>
-            {log.message}
-          </p>
-          {log.isAnomaly && (
-            <div className="flex items-center gap-1 mt-1">
-              <AlertTriangle className="h-3 w-3 text-orange-400" />
-              <span className="text-xs text-orange-400">Anomaly detected</span>
-            </div>
-          )}
-        </div>
-      </td>
-      <td className="px-4 py-3">
-        <div className="flex items-center justify-center">
-          <ChevronRight className="h-4 w-4 text-slate-400" />
-        </div>
-      </td>
-    </tr>
-  );
-});
+function LevelIcon({ level }: { level: LogLevel }) {
+  if (level === 'INFO')     return <CheckCircle  className="h-4 w-4" />;
+  if (level === 'WARN')     return <AlertTriangle className="h-4 w-4" />;
+  if (level === 'ERROR')    return <XCircle       className="h-4 w-4" />;
+  if (level === 'CRITICAL') return <AlertTriangle className="h-4 w-4" />;
+  return null;
+}
 
 export function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTableProps) {
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof LogEntry;
-    direction: 'asc' | 'desc';
-  } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof LogEntry; direction: 'asc' | 'desc' } | null>(null);
   const [page, setPage] = useState(0);
 
-  // Reset page when logs change significantly (e.g. filter applied)
-  const logCount = logs.length;
-  const totalPages = Math.max(1, Math.ceil(logCount / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(logs.length / PAGE_SIZE));
+  const clampedPage = Math.min(page, totalPages - 1);
 
   const sortedLogs = useMemo(() => {
     if (!sortConfig) return logs;
-
     return [...logs].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
-
-      if (aValue === null || aValue === undefined) return 1;
-      if (bValue === null || bValue === undefined) return -1;
-
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      const av = a[sortConfig.key];
+      const bv = b[sortConfig.key];
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (av < bv) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (av > bv) return sortConfig.direction === 'asc' ?  1 : -1;
       return 0;
     });
   }, [logs, sortConfig]);
 
-  // Only slice the current page for rendering
   const visibleLogs = useMemo(() => {
-    const start = page * PAGE_SIZE;
+    const start = clampedPage * PAGE_SIZE;
     return sortedLogs.slice(start, start + PAGE_SIZE);
-  }, [sortedLogs, page]);
+  }, [sortedLogs, clampedPage]);
 
   const handleSort = useCallback((key: keyof LogEntry) => {
-    setSortConfig(current => {
-      if (!current || current.key !== key) {
-        return { key, direction: 'desc' };
-      }
-      if (current.direction === 'desc') {
-        return { key, direction: 'asc' };
-      }
+    setSortConfig(cur => {
+      if (!cur || cur.key !== key) return { key, direction: 'desc' };
+      if (cur.direction === 'desc')  return { key, direction: 'asc' };
       return null;
     });
     setPage(0);
   }, []);
 
-  // Clamp page if logs shrink
-  if (page >= totalPages && page > 0) {
-    setPage(Math.max(0, totalPages - 1));
-  }
+  const SortArrow = ({ col }: { col: keyof LogEntry }) =>
+    sortConfig?.key === col
+      ? <span className="text-cyan-400">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+      : null;
 
   if (isLoading) {
     return (
-      <div className="glass rounded-xl border border-slate-800/60 p-6">
+      <div className="bg-card border border-border rounded-xl p-6">
         <div className="space-y-4">
           {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="h-4 bg-slate-700/50 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-slate-700/30 rounded w-1/2"></div>
+              <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
+              <div className="h-3 bg-secondary rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -214,157 +104,183 @@ export function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTab
   }
 
   return (
-    <div className="glass rounded-xl border border-slate-800/60 overflow-hidden">
-      {/* Table Header */}
-      <div className="border-b border-slate-700/50 p-4 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+
+      {/* Header */}
+      <div className="border-b border-border px-4 py-3 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-100">Log Entries</h3>
-          <p className="text-sm text-slate-400 mt-1">{logCount.toLocaleString()} log entries found</p>
+          <h3 className="text-lg font-semibold text-foreground">Log Entries</h3>
+          <p className="text-sm text-muted-foreground mt-0.5">{logs.length.toLocaleString()} entries</p>
         </div>
-        {/* Pagination controls */}
-        <div className="flex items-center gap-2 text-sm text-slate-400">
-          <button
-            disabled={page === 0}
-            onClick={() => setPage(p => Math.max(0, p - 1))}
-            className="p-1.5 rounded-lg hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <span className="text-slate-300 tabular-nums">
-            {page + 1} / {totalPages}
-          </span>
-          <button
-            disabled={page >= totalPages - 1}
-            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-            className="p-1.5 rounded-lg hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <button
+              disabled={clampedPage === 0}
+              onClick={() => setPage(p => Math.max(0, p - 1))}
+              className="p-1.5 rounded hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-foreground tabular-nums">{clampedPage + 1} / {totalPages}</span>
+            <button
+              disabled={clampedPage >= totalPages - 1}
+              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+              className="p-1.5 rounded hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-900/50 border-b border-slate-700/50">
+          <thead className="bg-secondary dark:bg-gray-800 border-b border-border">
             <tr>
-              <th className="px-4 py-3 text-left">
-                <button
-                  onClick={() => handleSort('timestamp')}
-                  className="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  Timestamp
-                  {sortConfig?.key === 'timestamp' && (
-                    <span className="text-cyan-400">
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left">
-                <button
-                  onClick={() => handleSort('level')}
-                  className="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  Level
-                  {sortConfig?.key === 'level' && (
-                    <span className="text-cyan-400">
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left">
-                <button
-                  onClick={() => handleSort('source')}
-                  className="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  Source
-                  {sortConfig?.key === 'source' && (
-                    <span className="text-cyan-400">
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left">
-                <button
-                  onClick={() => handleSort('eventType')}
-                  className="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  Event Type
-                  {sortConfig?.key === 'eventType' && (
-                    <span className="text-cyan-400">
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400">IP Address</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400">User ID</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400">Message</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-slate-400">Actions</th>
+              {[
+                { label: 'Timestamp',  col: 'timestamp'  as keyof LogEntry },
+                { label: 'Level',      col: 'level'      as keyof LogEntry },
+                { label: 'Source',     col: 'source'     as keyof LogEntry },
+                { label: 'Event Type', col: 'eventType'  as keyof LogEntry },
+              ].map(({ label, col }) => (
+                <th key={col} className="px-4 py-3 text-left">
+                  <button
+                    onClick={() => handleSort(col)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {label} <SortArrow col={col} />
+                  </button>
+                </th>
+              ))}
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">IP Address</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">User ID</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Message</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground">→</th>
             </tr>
           </thead>
           <tbody>
-            {visibleLogs.map((log) => (
-              <LogRow
+            {visibleLogs.map(log => (
+              <tr
                 key={log.id}
-                log={log}
-                isSelected={selectedLogId === log.id}
-                onSelect={onLogSelect}
-              />
+                onClick={() => onLogSelect(log.id)}
+                className={cn(
+                  'border-b border-border cursor-pointer transition-colors hover:bg-secondary/50 dark:hover:bg-slate-800/40',
+                  selectedLogId === log.id && 'bg-blue-500/5 border-blue-500/20'
+                )}
+              >
+                {/* Timestamp */}
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5 text-sm text-foreground">
+                    <Clock className="h-3 w-3 text-muted-foreground shrink-0" />
+                    {log.timestamp.toLocaleTimeString()}
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {formatDistanceToNowStrict(log.timestamp, { addSuffix: true })}
+                  </div>
+                </td>
+
+                {/* Level */}
+                <td className="px-4 py-3">
+                  <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border', LEVEL_COLORS[log.level])}>
+                    <LevelIcon level={log.level} />
+                    {log.level}
+                  </span>
+                </td>
+
+                {/* Source */}
+                <td className="px-4 py-3 text-sm font-medium">
+                  <span className={SOURCE_COLORS[log.source] ?? 'text-muted-foreground'}>
+                    {log.source}
+                  </span>
+                </td>
+
+                {/* Event Type */}
+                <td className="px-4 py-3 text-sm font-medium">
+                  <span className={EVENT_COLORS[log.eventType] ?? 'text-muted-foreground'}>
+                    {log.eventType}
+                  </span>
+                </td>
+
+                {/* IP */}
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="h-3 w-3 text-muted-foreground shrink-0" />
+                    <span className="text-sm font-mono text-foreground">{log.ipAddress}</span>
+                  </div>
+                  {log.metadata.country && (
+                    <div className="text-xs text-muted-foreground mt-0.5">{log.metadata.country}</div>
+                  )}
+                </td>
+
+                {/* User ID */}
+                <td className="px-4 py-3">
+                  {log.userId ? (
+                    <div className="flex items-center gap-1.5">
+                      <User className="h-3 w-3 text-muted-foreground shrink-0" />
+                      <span className="text-sm text-foreground">{log.userId}</span>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">System</span>
+                  )}
+                </td>
+
+                {/* Message */}
+                <td className="px-4 py-3 max-w-xs">
+                  <p className="text-sm text-foreground truncate" title={log.message}>{log.message}</p>
+                  {log.isAnomaly && (
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <AlertTriangle className="h-3 w-3 text-orange-400" />
+                      <span className="text-xs text-orange-400">Anomaly</span>
+                    </div>
+                  )}
+                </td>
+
+                {/* Arrow */}
+                <td className="px-4 py-3 text-center">
+                  <ChevronRight className="h-4 w-4 text-muted-foreground mx-auto" />
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Bottom pagination */}
-      {logCount > PAGE_SIZE && (
-        <div className="border-t border-slate-700/50 px-4 py-3 flex items-center justify-between text-sm text-slate-400">
+      {/* Footer pagination */}
+      {logs.length > PAGE_SIZE && (
+        <div className="border-t border-border px-4 py-2 flex items-center justify-between text-xs text-muted-foreground">
           <span>
-            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, logCount)} of {logCount.toLocaleString()}
+            {clampedPage * PAGE_SIZE + 1}–{Math.min((clampedPage + 1) * PAGE_SIZE, logs.length)} of {logs.length.toLocaleString()}
           </span>
           <div className="flex items-center gap-1">
-            <button
-              disabled={page === 0}
-              onClick={() => setPage(0)}
-              className="px-2 py-1 rounded hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              First
-            </button>
-            <button
-              disabled={page === 0}
-              onClick={() => setPage(p => Math.max(0, p - 1))}
-              className="px-2 py-1 rounded hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Prev
-            </button>
-            <button
-              disabled={page >= totalPages - 1}
-              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-              className="px-2 py-1 rounded hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-            <button
-              disabled={page >= totalPages - 1}
-              onClick={() => setPage(totalPages - 1)}
-              className="px-2 py-1 rounded hover:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Last
-            </button>
+            {['First', 'Prev', 'Next', 'Last'].map(label => (
+              <button
+                key={label}
+                disabled={
+                  (label === 'First' || label === 'Prev') ? clampedPage === 0
+                  : clampedPage >= totalPages - 1
+                }
+                onClick={() => {
+                  if (label === 'First') setPage(0);
+                  if (label === 'Prev')  setPage(p => Math.max(0, p - 1));
+                  if (label === 'Next')  setPage(p => Math.min(totalPages - 1, p + 1));
+                  if (label === 'Last')  setPage(totalPages - 1);
+                }}
+                className="px-2 py-0.5 rounded hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
       )}
 
       {logs.length === 0 && (
-        <div className="p-12 text-center">
-          <div className="text-slate-400">
-            <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p className="text-lg font-medium mb-2">No logs found</p>
-            <p className="text-sm">Try adjusting your filters or search criteria</p>
-          </div>
+        <div className="p-12 text-center text-muted-foreground">
+          <Clock className="h-12 w-12 mx-auto mb-4 opacity-40" />
+          <p className="text-lg font-medium mb-1">No logs found</p>
+          <p className="text-sm">Try adjusting your filters or search criteria</p>
         </div>
       )}
     </div>

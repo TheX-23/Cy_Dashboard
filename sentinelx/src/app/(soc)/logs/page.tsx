@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { Play, Pause, Download, RotateCcw } from 'lucide-react';
 import { useLogs } from '@/hooks/use-logs';
 import { LogFilters } from '@/components/logs/log-filters';
@@ -78,17 +77,13 @@ export default function LogsPage() {
   }, [filter]);
 
   return (
-    <main className="grid-bg min-h-screen p-6">
+    <main className="min-h-screen bg-background p-6">
       <div className="mx-auto w-full max-w-[1800px] space-y-6">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-100">Log Explorer</h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <h1 className="text-2xl font-semibold text-foreground">Log Explorer</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Advanced log analysis and real-time monitoring
             </p>
           </div>
@@ -118,7 +113,7 @@ export default function LogsPage() {
             {/* Refresh */}
             <button
               onClick={refreshLogs}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors text-slate-200"
+              className="flex items-center gap-2 px-4 py-2 bg-secondary dark:bg-gray-800 hover:bg-accent text-foreground border border-border rounded-lg transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Refresh
@@ -133,14 +128,10 @@ export default function LogsPage() {
               Export
             </button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <div>
           <LogFilters
             filter={filter}
             onFilterChange={updateFilter}
@@ -148,30 +139,22 @@ export default function LogsPage() {
             savedFilters={savedFilters}
             onSaveFilter={handleSaveFilter}
           />
-        </motion.div>
+        </div>
 
         {/* Analytics */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div>
           <LogAnalytics analytics={analytics} />
-        </motion.div>
+        </div>
 
         {/* Log Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <div>
           <LogTable
             logs={logs}
             selectedLogId={selectedLogId}
             onLogSelect={handleLogSelect}
             isLoading={isLoading}
           />
-        </motion.div>
+        </div>
 
         {/* Log Details Drawer */}
         {selectedLog && (
