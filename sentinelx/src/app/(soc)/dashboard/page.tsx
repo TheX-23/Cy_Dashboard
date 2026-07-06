@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, Shield, Activity } from 'lucide-react';
+import { RefreshCw, Shield, Activity, AlertTriangle } from 'lucide-react';
+import { useDashboard } from '@/hooks/use-dashboard';
 
 // Import new dashboard components
 import { KPICards } from '@/components/dashboard/KPICards';
@@ -16,23 +17,7 @@ import { HeaderThreatToggle } from '@/components/dashboard/HeaderThreatToggle';
 import { ThreatNewsPanel } from '@/components/dashboard/ThreatNewsPanel';
 import { SystemHealth } from '@/components/dashboard/SystemHealth';
 
-// Mock data
-const mockKPIData = {
-  totalThreats: 1247,
-  activeAlerts: 23,
-  openIncidents: 8,
-  systemHealth: 98.5,
-  rps: 15420
-};
-
-// Isolated Ticker component to prevent full page re-renders
-const LastUpdatedTicker = memo(({ date, mounted }: { date: Date | null, mounted: boolean }) => (
-  <div className="mt-2 text-xs text-muted-foreground">
-    Last updated: {mounted && date ? date.toLocaleString() : 'Loading...'}
-  </div>
-));
-LastUpdatedTicker.displayName = 'LastUpdatedTicker';
-
+// Mock data fallbacks
 const mockTrendData = [
   { time: '00:00', threats: 120, mitigated: 95 },
   { time: '04:00', threats: 145, mitigated: 120 },
@@ -70,17 +55,30 @@ const mockTopIPs = [
   { ip: '203.0.113.42', attacks: 21, country: 'BR' },
 ];
 
-const mockSystemHealth = {
-  cpu: 45.2,
-  memory: 67.8,
-  disk: 34.1,
-  network: 12.3,
-  uptime: '15d 8h 23m'
-};
+// Isolated Ticker component to prevent full page re-renders
+const LastUpdatedTicker = memo(({ date, mounted }: { date: Date | null, mounted: boolean }) => (
+  <div className="mt-2 text-xs text-muted-foreground">
+    Last updated: {mounted && date ? date.toLocaleString() : 'Loading...'}
+  </div>
+));
+LastUpdatedTicker.displayName = 'LastUpdatedTicker';
 
 export default function DashboardPage() {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isConnected, setIsConnected] = useState(true);
+  const {
+    stats,
+    trends,
+    activityFeed,
+    recentAlerts,
+    systemHealth,
+    isLoading,
+    error,
+    isConnected,
+    refresh
+  } = useDashboard();
+
+  const [isNewsPanelOpen, setIsNewsPanelOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   // Route protection
   useEffect(() => {
@@ -90,44 +88,115 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [isNewsPanelOpen, setIsNewsPanelOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    try {
-      queueMicrotask(() => {
-        setMounted(true);
-        setLastUpdate(new Date());
-      });
-    } catch (error) {
-      console.error("Error initializing dashboard:", error);
-    }
+    setMounted(true);
+    setLastUpdate(new Date());
   }, []);
 
-  // Simulate real-time updates - throttled to only update the timestamp
   useEffect(() => {
-    if (!mounted) return;
-    
-    const interval = setInterval(() => {
-      try {
-        setLastUpdate(new Date());
-      } catch (error) {
-        console.error('Error updating data:', error);
-      }
-    }, 10000); // Increased interval to 10s for better performance
-
-    return () => clearInterval(interval);
-  }, [mounted]);
-
-  const handleRefresh = () => {
-    // Refresh data logic here
-    try {
+    if (stats || systemHealth) {
       setLastUpdate(new Date());
-    } catch (error) {
-      console.error('Error refreshing data:', error);
+    }
+  }, [stats, systemHealth]);
+
+  const handleRefresh = async () => {
+    try {
+      await refresh();
+      setLastUpdate(new Date());
+    } catch (err) {
+      console.error('Error refreshing data:', err);
     }
   };
+
+  const kpiData = {
+    totalThreats: stats?.total_detections ?? 0,
+    activeAlerts: stats?.total_alerts ?? 0,
+    openIncidents: stats?.open_incidents ?? 0,
+    systemHealth: systemHealth?.metrics
+      ? Math.round(100 - (systemHealth.metrics.cpu_usage + systemHealth.metrics.memory_usage) / 4)
+      : systemHealth
+      ? Math.round(100 - (systemHealth.cpu_usage + systemHealth.memory_usage) / 4)
+      : 98.5,
+    rps: systemHealth?.active_connections ?? 15420
+  };
+
+  const chartTrendData = trends && trends.length > 0
+    ? trends.map(t => ({
+        time: new Date(t.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+        threats: t.critical + t.high + t.medium + t.low,
+        mitigated: Math.floor((t.critical + t.high + t.medium + t.low) * 0.85)
+      }))
+    : mockTrendData;
+
+  const distributionData = stats
+    ? [
+        { name: 'Critical', value: stats.critical_alerts, color: '#ef4444' },
+        { name: 'High', value: stats.high_alerts, color: '#f97316' },
+        { name: 'Medium', value: stats.medium_alerts, color: '#eab308' },
+        { name: 'Low', value: stats.low_alerts, color: '#22c55e' },
+      ]
+    : mockThreatData;
+
+  const alertsData = recentAlerts && recentAlerts.length > 0
+    ? recentAlerts.map((a: any) => ({
+        id: a.id,
+        type: a.title,
+        severity: a.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
+        source: a.source_ip || 'Internal',
+        time: new Date(a.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      }))
+    : mockAlerts;
+
+  const incidentsData = activityFeed && activityFeed.length > 0
+    ? activityFeed
+        .filter((act: any) => act.type === 'incident')
+        .map((act: any) => ({
+          id: act.id,
+          title: act.title,
+          status: act.status as 'active' | 'investigating' | 'contained' | 'resolved',
+          severity: act.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
+          time: new Date(act.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+        }))
+    : mockIncidents;
+
+  const healthData = {
+    cpu: systemHealth?.metrics?.cpu_usage ?? systemHealth?.cpu_usage ?? 45.2,
+    memory: systemHealth?.metrics?.memory_usage ?? systemHealth?.memory_usage ?? 67.8,
+    disk: systemHealth?.metrics?.disk_usage ?? systemHealth?.disk_usage ?? 34.1,
+    network: systemHealth?.metrics?.network_latency ?? systemHealth?.network_latency ?? 12.3,
+    uptime: systemHealth?.uptime ?? '15d 8h 23m'
+  };
+
+  if (isLoading && mounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <RefreshCw className="h-10 w-10 animate-spin text-green-500" />
+          <p className="text-muted-foreground animate-pulse font-medium">Connecting to SentinelX real-time SOC feeds...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && mounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-6">
+        <div className="flex flex-col items-center gap-4 text-center max-w-md">
+          <AlertTriangle className="h-12 w-12 text-red-500" />
+          <h2 className="text-lg font-semibold text-foreground">SOC Connection Error</h2>
+          <p className="text-muted-foreground text-sm">{error}</p>
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="mt-2 flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-foreground transition-colors hover:bg-accent"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Try Reconnecting</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -201,7 +270,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.5 }}
         className="mb-6"
       >
-        <KPICards data={mockKPIData} />
+        <KPICards data={kpiData} />
       </motion.div>
 
       {/* Main grid: self-start columns so a fixed-height chart is not stretched to match the taller sidebar */}
@@ -219,7 +288,7 @@ export default function DashboardPage() {
               Threat Trends
             </h2>
             <div className="h-[300px] w-full min-w-0 sm:h-[320px]">
-              <ThreatTrendChart data={mockTrendData} />
+              <ThreatTrendChart data={chartTrendData} />
             </div>
           </motion.div>
 
@@ -235,7 +304,7 @@ export default function DashboardPage() {
                 Threat Distribution
               </h3>
               <div className="min-h-[280px] w-full min-w-0 flex-1 overflow-visible">
-                <ThreatDistribution data={mockThreatData} />
+                <ThreatDistribution data={distributionData} />
               </div>
             </motion.div>
 
@@ -279,7 +348,7 @@ export default function DashboardPage() {
           >
             <h3 className="mb-4 text-lg font-semibold text-foreground">Recent Alerts</h3>
             <div className="min-h-0 flex-1">
-              <AlertsFeed alerts={mockAlerts} />
+              <AlertsFeed alerts={alertsData} />
             </div>
           </motion.div>
         </div>
@@ -293,7 +362,7 @@ export default function DashboardPage() {
         className="mt-6 w-full rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6"
       >
         <h3 className="mb-4 text-lg font-semibold text-foreground">System Health</h3>
-        <SystemHealth data={mockSystemHealth} layout="wide" />
+        <SystemHealth data={healthData} layout="wide" />
       </motion.div>
 
       {/* Bottom Section - Incidents */}
@@ -305,7 +374,7 @@ export default function DashboardPage() {
       >
         <div className="rounded-xl border border-border bg-card p-5 text-card-foreground sm:p-6">
           <h3 className="mb-4 text-lg font-semibold text-foreground">Active Incidents</h3>
-          <IncidentsList incidents={mockIncidents} />
+          <IncidentsList incidents={incidentsData} />
         </div>
       </motion.div>
 

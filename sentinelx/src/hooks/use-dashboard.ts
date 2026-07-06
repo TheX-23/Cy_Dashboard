@@ -1,10 +1,9 @@
-"use client";
-
 import { useState, useEffect } from 'react';
 import { useWebSocket } from './use-websocket';
+import apiClient from '@/lib/api-client';
 
 // Mock data for development
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 interface DashboardStats {
   total_alerts: number;
@@ -54,8 +53,8 @@ export function useDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Disable WebSocket for mock data
-const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
+  // Enable WebSocket connection
+  const { lastMessage, isConnected } = useWebSocket();
 
   // Fetch initial dashboard data
   useEffect(() => {
@@ -110,11 +109,7 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
           ];
 
           const mockRecentAlerts = [
-            { id: 1, title: 'Critical SQL Injection Attempt', severity: 'critical', status: 'open', timestamp: '2024-04-02T10:30:00Z', source: 'Web Application Firewall' },
-            { id: 2, title: 'Suspicious File Upload', severity: 'high', status: 'investigating', timestamp: '2024-04-02T10:25:00Z', source: 'File Scanner' },
-            { id: 3, title: 'Brute Force Attack Detected', severity: 'high', status: 'mitigated', timestamp: '2024-04-02T10:20:00Z', source: 'Authentication System' },
-            { id: 4, title: 'Unusual API Usage Pattern', severity: 'medium', status: 'monitoring', timestamp: '2024-04-02T10:15:00Z', source: 'API Gateway' },
-            { id: 5, title: 'Potential Data Exfiltration', severity: 'critical', status: 'investigating', timestamp: '2024-04-02T10:10:00Z', source: 'Data Loss Prevention' },
+            { id: 1, title: 'Brute Force Attack Detected', severity: 'high', status: 'mitigated', timestamp: '2024-04-02T10:20:00Z', source: 'Authentication System' },
           ];
 
           const mockSystemHealth = {
@@ -138,8 +133,6 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
           setRecentAlerts(mockRecentAlerts);
           setSystemHealth(mockSystemHealth);
         } else {
-          // Original API calls (commented out for now)
-          /*
           const [
             statsData,
             trendsData,
@@ -162,7 +155,6 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
           setActivityFeed(activityData);
           setRecentAlerts(recentAlertsData);
           setSystemHealth(healthData);
-          */
         }
 
       } catch (err) {
@@ -176,25 +168,41 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
     fetchDashboardData();
   }, []);
 
-  // WebSocket handling disabled for mock data
-  useEffect(() => {
-    // No WebSocket updates when using mock data
-  }, []);
-
   // Handle real-time WebSocket updates
-  // NOTE: lastMessage is currently null (USE_MOCK_DATA = true), this block is a no-op
   useEffect(() => {
     if (!lastMessage || !isConnected) return;
-    // When WebSocket is enabled, handle real-time events here
+    try {
+      const { type, data } = lastMessage;
+      if (type === 'system:health') {
+        setSystemHealth(data);
+      } else if (type === 'alerts:update' || type === 'incidents:update' || type === 'detections:update') {
+        // Refresh dynamic metrics and lists
+        apiClient.getDashboardStats().then(setStats).catch(console.error);
+        apiClient.getRecentAlerts(10).then(setRecentAlerts).catch(console.error);
+        apiClient.getActivityFeed(20).then(setActivityFeed).catch(console.error);
+      }
+    } catch (err) {
+      console.error('Error handling WebSocket message:', err);
+    }
   }, [lastMessage, isConnected]);
 
   // Refresh data periodically (only when WebSocket is active)
   useEffect(() => {
-    // Periodic refresh is disabled while USE_MOCK_DATA is true
     if (!isConnected || USE_MOCK_DATA) return;
 
     const interval = setInterval(async () => {
-      console.log('Periodic refresh disabled — apiClient not configured');
+      try {
+        const [statsData, healthData, recentAlertsData] = await Promise.all([
+          apiClient.getDashboardStats(),
+          apiClient.getSystemHealth(),
+          apiClient.getRecentAlerts(10)
+        ]);
+        setStats(statsData);
+        setSystemHealth(healthData);
+        setRecentAlerts(recentAlertsData);
+      } catch (err) {
+        console.error('Periodic refresh error:', err);
+      }
     }, 30000);
 
     return () => clearInterval(interval);
@@ -214,7 +222,27 @@ const { lastMessage, isConnected } = { lastMessage: null, isConnected: false };
       if (USE_MOCK_DATA) return;
       try {
         setIsLoading(true);
-        console.log('Manual refresh disabled — apiClient not configured');
+        const [
+          statsData,
+          trendsData,
+          threatMapData,
+          activityData,
+          recentAlertsData,
+          healthData,
+        ] = await Promise.all([
+          apiClient.getDashboardStats(),
+          apiClient.getAlertTrends(7),
+          apiClient.getThreatMap(),
+          apiClient.getActivityFeed(20),
+          apiClient.getRecentAlerts(10),
+          apiClient.getSystemHealth(),
+        ]);
+        setStats(statsData);
+        setTrends(trendsData);
+        setThreatMap(threatMapData);
+        setActivityFeed(activityData);
+        setRecentAlerts(recentAlertsData);
+        setSystemHealth(healthData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to refresh data');
       } finally {

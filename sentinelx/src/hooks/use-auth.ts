@@ -2,9 +2,10 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import apiClient from '@/lib/api-client';
 
 // Mock authentication for development
-const USE_MOCK_AUTH = true;
+const USE_MOCK_AUTH = false;
 
 interface User {
   id: string;
@@ -36,37 +37,51 @@ export const useAuth = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true });
         try {
-          // Mock authentication with specific credentials
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // Valid credentials
-          const validCredentials = [
-            { email: 'admin@sentinelx.com', password: 'admin123', name: 'Admin User', role: 'Administrator' },
-            { email: 'security@sentinelx.com', password: 'security123', name: 'Security Analyst', role: 'Security Analyst' },
-            { email: 'analyst@sentinelx.com', password: 'analyst123', name: 'Threat Analyst', role: 'Analyst' },
-            { email: 'demo@sentinelx.com', password: 'demo123', name: 'Demo User', role: 'User' }
-          ];
-          
-          const credential = validCredentials.find(cred => cred.email === email && cred.password === password);
-          
-          if (!credential) {
-            throw new Error('Invalid email or password');
+          if (USE_MOCK_AUTH) {
+            // Mock authentication with specific credentials
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Valid credentials
+            const validCredentials = [
+              { email: 'admin@sentinelx.com', password: 'admin123', name: 'Admin User', role: 'Administrator' },
+              { email: 'security@sentinelx.com', password: 'security123', name: 'Security Analyst', role: 'Security Analyst' },
+              { email: 'analyst@sentinelx.com', password: 'analyst123', name: 'Threat Analyst', role: 'Analyst' },
+              { email: 'demo@sentinelx.com', password: 'demo123', name: 'Demo User', role: 'User' }
+            ];
+            
+            const credential = validCredentials.find(cred => cred.email === email && cred.password === password);
+            
+            if (!credential) {
+              throw new Error('Invalid email or password');
+            }
+            
+            const user: User = {
+              id: credential.email === 'admin@sentinelx.com' ? '1' : 
+                  credential.email === 'security@sentinelx.com' ? '2' :
+                  credential.email === 'analyst@sentinelx.com' ? '3' : '4',
+              email: credential.email,
+              name: credential.name,
+              role: credential.role,
+            };
+
+            // Store token in localStorage for route protection
+            localStorage.setItem('token', 'mock-jwt-token-' + Date.now());
+            localStorage.setItem('user', JSON.stringify(user));
+
+            set({ user, isAuthenticated: true, isLoading: false });
+          } else {
+            const response = await apiClient.login(email, password);
+            const user: User = {
+              id: response.user.id,
+              email: response.user.email,
+              name: response.user.name,
+              role: response.user.role,
+            };
+            localStorage.setItem('auth_token', response.access_token);
+            localStorage.setItem('token', response.access_token); // for compatibility
+            localStorage.setItem('user', JSON.stringify(user));
+            set({ user, isAuthenticated: true, isLoading: false });
           }
-          
-          const user: User = {
-            id: credential.email === 'admin@sentinelx.com' ? '1' : 
-                credential.email === 'security@sentinelx.com' ? '2' :
-                credential.email === 'analyst@sentinelx.com' ? '3' : '4',
-            email: credential.email,
-            name: credential.name,
-            role: credential.role,
-          };
-
-          // Store token in localStorage for route protection
-          localStorage.setItem('token', 'mock-jwt-token-' + Date.now());
-          localStorage.setItem('user', JSON.stringify(user));
-
-          set({ user, isAuthenticated: true, isLoading: false });
         } catch (error) {
           set({ isLoading: false });
           throw error;
