@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export function createProxyClient(request: NextRequest, response: NextResponse) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-  if (!url || !key) return null;
+  if (!url || !key || !url.startsWith("http")) return null;
   return createServerClient(
     url,
     key,
@@ -22,4 +22,5 @@ export function createProxyClient(request: NextRequest, response: NextResponse) 
     },
   );
 }
+
 
