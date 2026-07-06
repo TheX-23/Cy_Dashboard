@@ -1,15 +1,15 @@
 "use client";
 
-
+import { memo } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { LogAnalytics } from '@/types/logs';
+import type { LogAnalytics as LogAnalyticsType } from '@/types/logs';
 import { TrendingUp, AlertTriangle, Activity, Shield } from 'lucide-react';
 
 interface LogAnalyticsProps {
-  analytics: LogAnalytics;
+  analytics: LogAnalyticsType;
 }
 
-export function LogAnalytics({ analytics }: LogAnalyticsProps) {
+export const LogAnalytics = memo(function LogAnalytics({ analytics }: LogAnalyticsProps) {
   const getErrorRateColor = (rate: number) => {
     if (rate < 5) return 'text-green-400';
     if (rate < 15) return 'text-yellow-400';
@@ -219,4 +219,4 @@ export function LogAnalytics({ analytics }: LogAnalyticsProps) {
       </div>
     </div>
   );
-}
+});

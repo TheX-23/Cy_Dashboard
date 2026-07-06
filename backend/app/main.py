@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.models.database import Base, engine
 from app.api import api_router
 from app.services.redis_client import redis_client
+from app.services.log_generator import log_generator
 # from app.services.detection_engine import detection_engine
 # from app.services.soar_engine import soar_engine
 
@@ -23,8 +24,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Create database tables (disabled for development without PostgreSQL)
-# Base.metadata.create_all(bind=engine)
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -275,35 +276,22 @@ async def log_requests(request: Request, call_next):
     return response
 
 # Run background tasks for WebSocket broadcasting
-async def broadcast_redis_messages():
-    """Background task to broadcast Redis messages to WebSocket clients"""
-    while True:
-        try:
-            # Subscribe to all Redis channels
-            channels = ["logs_channel", "alerts_channel", "threats_channel", "incidents_channel"]
-            
-            for channel in channels:
-                try:
-                    pubsub = await redis_client.subscribe(channel)
-                    
-                    async for message in pubsub.listen():
-                        if message["type"] == "message":
-                            # Broadcast to all WebSocket clients
-                            await manager.broadcast(message["data"])
-                
-                except Exception as e:
-                    logger.error(f"Error in Redis subscription for {channel}: {e}")
-                    await asyncio.sleep(5)  # Wait before retrying
-        
-        except Exception as e:
-            logger.error(f"Error in Redis broadcasting: {e}")
-            await asyncio.sleep(10)  # Wait before retrying
+async def simulate_live_traffic():
+    """Background task to generate mock logs and broadcast to WebSocket clients"""
+    try:
+        # Start generator and pass the manager.broadcast function as callback
+        await log_generator.start(manager.broadcast)
+    except asyncio.CancelledError:
+        log_generator.stop()
+        logger.info("Log generator task cancelled")
+    except Exception as e:
+        logger.error(f"Error in LogGenerator background task: {e}")
 
 # Start background task
 @app.on_event("startup")
 async def startup_event():
     """Start background tasks"""
-    asyncio.create_task(broadcast_redis_messages())
+    asyncio.create_task(simulate_live_traffic())
 
 if __name__ == "__main__":
     import uvicorn

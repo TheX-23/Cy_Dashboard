@@ -1,7 +1,7 @@
 from typing import List, Optional, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func, desc, and_
+from sqlalchemy import func, desc, and_, or_
 from app.models.database import get_db
 from app.models.alert import Alert, AlertSeverity, AlertStatus
 from app.models.incident import Incident, IncidentStatus
@@ -211,11 +211,11 @@ async def get_threat_map(
         logger.error(f"Threat map error: {e}")
         # Development fallback so dashboard map still renders when DB is unavailable.
         return [
-            ThreatMap(country="United States", threats=14, severity="high"),
-            ThreatMap(country="China", threats=18, severity="critical"),
-            ThreatMap(country="Russia", threats=11, severity="high"),
-            ThreatMap(country="Germany", threats=7, severity="medium"),
-            ThreatMap(country="India", threats=9, severity="medium"),
+            {"country": "United States", "threats": 14, "severity": "high"},
+            {"country": "China", "threats": 18, "severity": "critical"},
+            {"country": "Russia", "threats": 11, "severity": "high"},
+            {"country": "Germany", "threats": 7, "severity": "medium"},
+            {"country": "India", "threats": 9, "severity": "medium"},
         ]
 
 

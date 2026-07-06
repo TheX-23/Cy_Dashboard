@@ -16,13 +16,14 @@ class RedisClient:
             self.redis = redis.from_url(
                 settings.REDIS_URL,
                 encoding="utf-8",
-                decode_responses=True
+                decode_responses=True,
+                socket_timeout=2.0
             )
             await self.redis.ping()
             logger.info("Connected to Redis")
         except Exception as e:
-            logger.error(f"Failed to connect to Redis: {e}")
-            raise
+            self.redis = None
+            logger.warning(f"Redis connection unavailable: {e}. Running in degraded mode.")
 
     async def disconnect(self):
         """Close Redis connection"""
@@ -35,6 +36,9 @@ class RedisClient:
         if not self.redis:
             await self.connect()
         
+        if not self.redis:
+            return None
+
         serialized_value = json.dumps(value) if not isinstance(value, str) else value
         await self.redis.set(key, serialized_value, ex=expire)
 
@@ -43,6 +47,9 @@ class RedisClient:
         if not self.redis:
             await self.connect()
         
+        if not self.redis:
+            return None
+
         value = await self.redis.get(key)
         if value:
             try:

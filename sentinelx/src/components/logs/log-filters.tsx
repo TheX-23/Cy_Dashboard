@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Search, Calendar, Filter, X, Save, RotateCcw } from 'lucide-react';
 import { LogFilter, LogLevel, LogSource, EventType, SavedFilter } from '@/types/logs';
 import { cn } from '@/lib/utils/cn';
@@ -25,7 +25,7 @@ const TIME_RANGES = [
   { value: 'custom', label: 'Custom range' }
 ] as const;
 
-export function LogFilters({ 
+export const LogFilters = memo(function LogFilters({ 
   filter, 
   onFilterChange, 
   onClear, 
@@ -338,4 +338,4 @@ export function LogFilters({
       )}
     </div>
   );
-}
+});

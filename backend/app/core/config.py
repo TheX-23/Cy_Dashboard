@@ -35,13 +35,7 @@ class Settings(BaseSettings):
     def assemble_db_connection(cls, v: Optional[str], values: dict) -> str:
         if isinstance(v, str):
             return v
-        return (
-            f"postgresql://{values.get('DATABASE_USER')}:"
-            f"{values.get('DATABASE_PASSWORD')}@"
-            f"{values.get('DATABASE_HOST')}:"
-            f"{values.get('DATABASE_PORT')}/"
-            f"{values.get('DATABASE_NAME')}"
-        )
+        return "sqlite:///./sentinelx.db"
     
     # Redis Configuration
     REDIS_URL: Optional[str] = None

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Search, Bell, User, Settings, Wifi, WifiOff, Activity, AlertTriangle, Shield, LogOut, UserCircle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useTheme } from '@/context/ThemeContext';
@@ -10,7 +10,7 @@ interface TopbarEnhancedProps {
   onMenuClick?: () => void;
 }
 
-export function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
+export const TopbarEnhanced = memo(function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
   const { isDarkMode } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState([
@@ -316,4 +316,4 @@ export function TopbarEnhanced({ onMenuClick }: TopbarEnhancedProps) {
       </div>
     </header>
   );
-}
+});

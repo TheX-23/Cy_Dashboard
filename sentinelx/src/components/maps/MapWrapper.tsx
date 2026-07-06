@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, memo } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import ThreatMap from "./ThreatMap";
 import type { ThreatLocation } from "./ThreatMap";
@@ -32,7 +32,7 @@ const COUNTRY_COORDS: Record<string, { lat: number; lng: number; city: string }>
   Unknown: { lat: 0, lng: 0, city: "Unknown" },
 };
 
-export default function MapWrapper() {
+export const MapWrapper = memo(function MapWrapper() {
   const { isDarkMode } = useTheme();
   const [threats, setThreats] = useState<ThreatLocation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,4 +103,6 @@ export default function MapWrapper() {
       )}
     </div>
   );
-}
+});
+
+export default MapWrapper;

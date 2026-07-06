@@ -13,6 +13,7 @@ from app.core.config import settings
 import uuid
 import json
 import re
+from app.services.ai_engine import ai_engine
 
 logger = logging.getLogger(__name__)
 
@@ -184,6 +185,37 @@ class ThreatIntelRule(DetectionRule):
         return None
 
 
+class AIAnomalyRule(DetectionRule):
+    """Machine learning based anomaly detection rule"""
+    
+    def __init__(self):
+        super().__init__(
+            "AI Anomaly Detection",
+            ThreatType.SUSPICIOUS_ACTIVITY,
+            85
+        )
+    
+    def check(self, log: Log) -> Optional[Dict[str, Any]]:
+        # Convert Log model to dict for AI engine
+        log_dict = {
+            "ip_address": log.ip_address,
+            "status_code": log.status_code,
+            "response_size": log.response_size,
+            "request_size": log.request_size,
+            "response_time_ms": log.response_time_ms
+        }
+        
+        is_anomaly = ai_engine.predict(log_dict)
+        
+        if is_anomaly:
+            return {
+                "description": "AI model detected anomalous behavior based on traffic patterns.",
+                "confidence": "High",
+                "ai_model": "Isolation Forest"
+            }
+            
+        return None
+
 class DetectionEngine:
     """Main detection engine"""
     
@@ -198,7 +230,8 @@ class DetectionEngine:
             SQLInjectionRule(),
             BruteForceRule(),
             XSSRule(),
-            ThreatIntelRule()
+            ThreatIntelRule(),
+            AIAnomalyRule()
         ]
         logger.info(f"Loaded {len(self.rules)} detection rules")
     

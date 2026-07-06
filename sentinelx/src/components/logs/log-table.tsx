@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { ChevronRight, ChevronLeft, Globe, User, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { LogEntry, LogLevel } from '@/types/logs';
@@ -49,7 +49,7 @@ function LevelIcon({ level }: { level: LogLevel }) {
   return null;
 }
 
-export function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTableProps) {
+export const LogTable = memo(function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTableProps) {
   const [sortConfig, setSortConfig] = useState<{ key: keyof LogEntry; direction: 'asc' | 'desc' } | null>(null);
   const [page, setPage] = useState(0);
 
@@ -105,7 +105,6 @@ export function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTab
 
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-
       {/* Header */}
       <div className="border-b border-border px-4 py-3 flex items-center justify-between">
         <div>
@@ -285,4 +284,6 @@ export function LogTable({ logs, selectedLogId, onLogSelect, isLoading }: LogTab
       )}
     </div>
   );
-}
+});
+
+export default LogTable;

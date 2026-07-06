@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, Shield, Activity } from 'lucide-react';
 
@@ -24,6 +24,14 @@ const mockKPIData = {
   systemHealth: 98.5,
   rps: 15420
 };
+
+// Isolated Ticker component to prevent full page re-renders
+const LastUpdatedTicker = memo(({ date, mounted }: { date: Date | null, mounted: boolean }) => (
+  <div className="mt-2 text-xs text-muted-foreground">
+    Last updated: {mounted && date ? date.toLocaleString() : 'Loading...'}
+  </div>
+));
+LastUpdatedTicker.displayName = 'LastUpdatedTicker';
 
 const mockTrendData = [
   { time: '00:00', threats: 120, mitigated: 95 },
@@ -97,18 +105,17 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Simulate real-time updates
+  // Simulate real-time updates - throttled to only update the timestamp
   useEffect(() => {
     if (!mounted) return;
     
     const interval = setInterval(() => {
       try {
         setLastUpdate(new Date());
-        // Update mock data here
       } catch (error) {
         console.error('Error updating data:', error);
       }
-    }, 5000);
+    }, 10000); // Increased interval to 10s for better performance
 
     return () => clearInterval(interval);
   }, [mounted]);
@@ -184,9 +191,7 @@ export default function DashboardPage() {
         </div>
         
         {/* Last Update */}
-        <div className="mt-2 text-xs text-muted-foreground">
-          Last updated: {mounted && lastUpdate ? lastUpdate.toLocaleString() : 'Loading...'}
-        </div>
+        <LastUpdatedTicker date={lastUpdate} mounted={mounted} />
       </motion.div>
 
       {/* KPI Cards */}

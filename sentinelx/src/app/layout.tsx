@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProviders } from "@/providers/app-providers";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { AiChatbot } from "@/components/chat/AiChatbot";
 // import "@/utils/global-error-handler";
 
 const geistSans = Geist({
@@ -48,7 +49,10 @@ export default function RootLayout({
       >
         <ErrorBoundary>
           <ThemeProvider>
-            <AppProviders>{children}</AppProviders>
+            <AppProviders>
+              {children}
+              <AiChatbot />
+            </AppProviders>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

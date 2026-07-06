@@ -12,19 +12,19 @@ import { Footer } from "@/components/landing/footer-simple";
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 
-const binaryParticles = Array.from({ length: 8 }, (_, i) => ({
-  top: ((i * 13 + 17) % 100) + 0.25,
-  left: ((i * 29 + 11) % 100) + 0.5,
-  duration: 10 + (i % 5),
-  delay: (i % 4) * 1.5,
+const binaryParticles = Array.from({ length: 4 }, (_, i) => ({
+  top: ((i * 23 + 17) % 100) + 0.25,
+  left: ((i * 37 + 11) % 100) + 0.5,
+  duration: 12 + (i % 5),
+  delay: (i % 4) * 2,
   bit: i % 2 === 0 ? '1' : '0',
 }));
 
-const threatIndicators = Array.from({ length: 4 }, (_, i) => ({
-  top: 20 + ((i * 17 + 9) % 60),
-  left: 10 + ((i * 23 + 7) % 80),
-  duration: 3 + (i % 3),
-  delay: i * 1.25,
+const threatIndicators = Array.from({ length: 2 }, (_, i) => ({
+  top: 30 + ((i * 31 + 9) % 40),
+  left: 20 + ((i * 43 + 7) % 60),
+  duration: 4 + (i % 3),
+  delay: i * 2,
 }));
 
 export default function LandingPage() {
@@ -33,7 +33,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     checkAuth();
-    
+
     // Redirect to dashboard if already authenticated
     if (isAuthenticated) {
       router.push('/dashboard');
@@ -73,7 +73,7 @@ export default function LandingPage() {
         >
           <Shield className="w-16 h-16" />
         </motion.div>
-        
+
         {/* Alert Triangle */}
         <motion.div
           className="absolute top-40 right-20 text-yellow-400/15"
@@ -91,7 +91,7 @@ export default function LandingPage() {
         >
           <AlertTriangle className="w-12 h-12" />
         </motion.div>
-        
+
         {/* Lock Icon */}
         <motion.div
           className="absolute bottom-32 left-1/4 text-blue-400/20"
@@ -109,7 +109,7 @@ export default function LandingPage() {
         >
           <Lock className="w-14 h-14" />
         </motion.div>
-        
+
         {/* Eye Icon (Monitoring) */}
         <motion.div
           className="absolute top-1/3 right-1/3 text-purple-400/15"
@@ -127,7 +127,7 @@ export default function LandingPage() {
         >
           <Eye className="w-12 h-12" />
         </motion.div>
-        
+
         {/* Network/Activity Icons */}
         <motion.div
           className="absolute top-60 left-1/3 text-cyan-400/10"
@@ -145,10 +145,11 @@ export default function LandingPage() {
         >
           <Activity className="w-10 h-10" />
         </motion.div>
-        
+
         {/* Database Icon */}
         <motion.div
           className="absolute bottom-40 right-1/4 text-orange-400/10"
+          style={{ willChange: "transform, opacity" }}
           animate={{
             y: [0, -15, 0],
             x: [0, -20, 0],
@@ -163,7 +164,7 @@ export default function LandingPage() {
         >
           <Database className="w-11 h-11" />
         </motion.div>
-        
+
         {/* Binary Code Particles */}
         {binaryParticles.map((particle, i) => (
           <motion.div
@@ -172,10 +173,11 @@ export default function LandingPage() {
             style={{
               top: `${particle.top}%`,
               left: `${particle.left}%`,
+              willChange: "transform, opacity"
             }}
             animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
+              y: [0, -60, 0],
+              opacity: [0, 0.6, 0],
             }}
             transition={{
               duration: particle.duration,
@@ -187,7 +189,7 @@ export default function LandingPage() {
             {particle.bit}
           </motion.div>
         ))}
-        
+
         {/* Threat Indicators */}
         {threatIndicators.map((indicator, i) => (
           <motion.div
@@ -209,7 +211,7 @@ export default function LandingPage() {
             }}
           />
         ))}
-        
+
         {/* Connection Lines */}
         <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
           <motion.line
@@ -248,7 +250,7 @@ export default function LandingPage() {
             }}
           />
         </svg>
-        
+
         {/* Floating Grid Lines */}
         <motion.div
           className="absolute top-0 left-0 w-full h-full"
@@ -266,15 +268,15 @@ export default function LandingPage() {
           }}
         />
       </div>
-      
+
       <Navbar />
-      
+
       <main>
         <HeroSection />
         <FeaturesSection />
         <LivePreview />
         <TrustSection />
-        
+
         {/* Final CTA Section */}
         <section className="py-20 bg-gradient-to-b from-background via-card to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -292,7 +294,7 @@ export default function LandingPage() {
               <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
                 Join thousands of security teams who trust SentinelX for their mission-critical operations.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.a
                   href="/signup"
@@ -318,7 +320,7 @@ export default function LandingPage() {
                     }}
                   />
                 </motion.a>
-                
+
                 <motion.a
                   href="/login"
                   className="px-10 py-4 text-muted-foreground font-semibold text-lg rounded-xl border border-green-500/30 bg-card/50 backdrop-blur-sm hover:text-foreground hover:border-green-400 transition-all duration-300"
@@ -333,7 +335,7 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

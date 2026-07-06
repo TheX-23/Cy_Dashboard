@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import type { CircleMarkerOptions, Map as LeafletMap, PolylineOptions } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "@/context/ThemeContext";
@@ -80,7 +80,7 @@ function escapeHtml(s: string) {
  * uses a ref callback with a stale `context === null` check (empty useCallback deps), which can
  * call `L.map()` twice on the same DOM node under Strict Mode / Turbopack — "already initialized".
  */
-export default function ThreatMapView({
+export const ThreatMapView = memo(function ThreatMapView({
   threats,
   attackLines,
 }: ThreatMapViewProps) {
@@ -263,4 +263,6 @@ export default function ThreatMapView({
       }}
     />
   );
-}
+});
+
+export default ThreatMapView;
