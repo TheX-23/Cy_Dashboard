@@ -68,12 +68,12 @@ export function useWebSocket(): UseWebSocketReturn {
 
       ws.onerror = (event) => {
         setError('WebSocket connection error');
-        console.error('WebSocket error:', event);
+        console.warn('WebSocket error (connection failed/unreachable):', event);
       };
 
     } catch (err) {
       setError('Failed to create WebSocket connection');
-      console.error('WebSocket creation error:', err);
+      console.warn('WebSocket creation error:', err);
     }
   };
 

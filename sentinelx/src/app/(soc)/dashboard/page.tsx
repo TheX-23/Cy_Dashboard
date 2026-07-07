@@ -73,6 +73,7 @@ export default function DashboardPage() {
     isLoading,
     error,
     isConnected,
+    isOffline,
     refresh
   } = useDashboard();
 
@@ -200,6 +201,32 @@ export default function DashboardPage() {
 
   return (
     <>
+      {/* Offline Alert Banner */}
+      {isOffline && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-500 shadow-lg backdrop-blur-sm"
+        >
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-amber-500/20 p-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm">Offline Demo Mode</p>
+              <p className="text-xs text-amber-500/80">Could not establish connection to the backend server (FastAPI). Displaying static mock data.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="rounded-lg bg-amber-500/20 px-4 py-2 text-xs font-semibold text-amber-500 hover:bg-amber-500/30 transition-colors self-stretch sm:self-auto text-center"
+          >
+            Retry Connection
+          </button>
+        </motion.div>
+      )}
+
       {/* Dashboard Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
