@@ -98,9 +98,9 @@ export const TopbarEnhanced = memo(function TopbarEnhanced({ onMenuClick }: Topb
   };
 
   const getStatusColor = (value: number) => {
-    if (value >= 80) return 'text-red-400';
-    if (value >= 60) return 'text-yellow-400';
-    return 'text-green-400';
+    if (value >= 80) return isDarkMode ? 'text-red-400' : 'text-red-600 font-bold';
+    if (value >= 60) return isDarkMode ? 'text-yellow-400' : 'text-amber-600 font-bold';
+    return isDarkMode ? 'text-green-400' : 'text-green-600 font-bold';
   };
 
   const formatPercent = (value: number) => `${value.toFixed(1)}%`;

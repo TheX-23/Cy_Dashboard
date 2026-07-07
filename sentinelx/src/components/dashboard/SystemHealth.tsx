@@ -86,7 +86,7 @@ export const SystemHealth: React.FC<SystemHealthProps> = React.memo(({ data, lay
               </span>
             </div>
 
-            <div className="h-2 w-full rounded-full bg-muted dark:bg-slate-700">
+            <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${metric.value ?? 0}%` }}

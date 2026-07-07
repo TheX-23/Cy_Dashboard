@@ -2,45 +2,45 @@
 
 /* Light Theme (Default) - Professional Clean */
 :root {
-  --background: #f8fafc;
-  --foreground: #111827;
+  --background: #f1f5f9;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #111827;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #111827;
+  --popover-foreground: #0f172a;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
+  --secondary: #e2e8f0;
   --secondary-foreground: #0f172a;
-  --muted: #6b7280;
-  --muted-foreground: #6b7280;
-  --accent: #f1f5f9;
+  --muted: #475569;
+  --muted-foreground: #64748b;
+  --accent: #e2e8f0;
   --accent-foreground: #0f172a;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e5e7eb;
+  --border: #cbd5e1;
   --input: #ffffff;
   --ring: #2563eb;
   --radius: 0.5rem;
-  --sidebar: #f1f5f9;
-  --sidebar-foreground: #111827;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
   --navbar: #ffffff;
-  --navbar-foreground: #111827;
+  --navbar-foreground: #0f172a;
   --status-critical: #dc2626;
   --status-high: #ea580c;
   --status-medium: #ca8a04;
   --status-low: #059669;
-  /* Cyber / glass utilities (were undefined — broke theme layers & effects) */
+  /* Cyber / glass utilities */
   --neon-primary: #10b981;
   --neon-secondary: #06b6d4;
-  --neon-border: rgba(16, 185, 129, 0.35);
-  --neon-glow: rgba(16, 185, 129, 0.2);
-  --neon-bg: rgba(16, 185, 129, 0.06);
+  --neon-border: rgba(16, 185, 129, 0.25);
+  --neon-glow: rgba(0, 0, 0, 0.05);
+  --neon-bg: rgba(16, 185, 129, 0.03);
   --cyber-blue: #0284c7;
   --cyber-purple: #7c3aed;
   --cyber-cyan: #0891b2;
-  --panel: rgba(255, 255, 255, 0.92);
-  --panel-border: rgba(15, 23, 42, 0.08);
+  --panel: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(15, 23, 42, 0.12);
 }
 
 /* Dark Theme */
