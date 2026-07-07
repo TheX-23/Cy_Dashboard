@@ -141,9 +141,9 @@ export default function SettingsPage() {
       default:
         return (
           <div className="glass-neon rounded-xl border border-green-500/30 p-12 text-center">
-            <div className="text-slate-400">
+            <div className="text-muted-foreground">
               <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">Coming Soon</p>
+              <p className="text-lg font-medium mb-2 text-foreground">Coming Soon</p>
               <p className="text-sm">This settings section is currently under development.</p>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function SettingsPage() {
         >
           <div>
             <h1 className="text-2xl font-semibold text-green-400">Settings</h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               System configuration and preferences
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function SettingsPage() {
                         "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left",
                         activeTab === tab.id
                           ? "bg-green-500 text-black"
-                          : "text-slate-400 hover:text-green-400 hover:bg-green-500/10"
+                          : "text-muted-foreground hover:text-green-400 hover:bg-green-500/10"
                       )}
                     >
                       <Icon className="h-4 w-4" />
@@ -238,26 +238,26 @@ export default function SettingsPage() {
               <h3 className="text-sm font-semibold text-green-400 mb-3">Quick Stats</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Active Users</span>
-                  <span className="text-xs text-white font-medium">
+                  <span className="text-xs text-muted-foreground">Active Users</span>
+                  <span className="text-xs text-foreground font-medium">
                     {users.filter(u => u.status === 'active').length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">API Keys</span>
-                  <span className="text-xs text-white font-medium">
+                  <span className="text-xs text-muted-foreground">API Keys</span>
+                  <span className="text-xs text-foreground font-medium">
                     {apiKeys.filter(k => k.status === 'active').length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Integrations</span>
-                  <span className="text-xs text-white font-medium">
+                  <span className="text-xs text-muted-foreground">Integrations</span>
+                  <span className="text-xs text-foreground font-medium">
                     {integrations.filter(i => i.status === 'active').length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Data Sources</span>
-                  <span className="text-xs text-white font-medium">
+                  <span className="text-xs text-muted-foreground">Data Sources</span>
+                  <span className="text-xs text-foreground font-medium">
                     {dataSources.filter(d => d.status === 'active').length}
                   </span>
                 </div>

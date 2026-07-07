@@ -43,9 +43,9 @@ export function AccountSettings({ profile, onUpdate, isLoading }: AccountSetting
   if (!profile) {
     return (
       <div className="glass-neon rounded-xl border border-green-500/30 p-8">
-        <div className="text-center text-slate-400">
+        <div className="text-center text-muted-foreground">
           <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p className="text-lg font-medium mb-2">Loading Profile</p>
+          <p className="text-lg font-medium mb-2 text-foreground">Loading Profile</p>
           <p className="text-sm">Please wait while we load your account information...</p>
         </div>
       </div>
@@ -134,33 +134,33 @@ export function AccountSettings({ profile, onUpdate, isLoading }: AccountSetting
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Full Name</p>
-                  <p className="text-white font-medium">{profile.name}</p>
+                  <p className="text-sm text-muted-foreground">Full Name</p>
+                  <p className="text-foreground font-medium">{profile.name}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Email Address</p>
-                  <p className="text-white font-medium">{profile.email}</p>
+                  <p className="text-sm text-muted-foreground">Email Address</p>
+                  <p className="text-foreground font-medium">{profile.email}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Role</p>
-                  <p className="text-white font-medium">{profile.role}</p>
+                  <p className="text-sm text-muted-foreground">Role</p>
+                  <p className="text-foreground font-medium">{profile.role}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Department</p>
-                  <p className="text-white font-medium">{profile.department}</p>
+                  <p className="text-sm text-muted-foreground">Department</p>
+                  <p className="text-foreground font-medium">{profile.department}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-green-500/20">
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Member Since</p>
-                  <p className="text-white font-medium">
+                  <p className="text-sm text-muted-foreground">Member Since</p>
+                  <p className="text-foreground font-medium">
                     {profile.createdAt.toLocaleDateString()}
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-400">Last Login</p>
-                  <p className="text-white font-medium">
+                  <p className="text-sm text-muted-foreground">Last Login</p>
+                  <p className="text-foreground font-medium">
                     {profile.lastLogin.toLocaleString()}
                   </p>
                 </div>
@@ -237,8 +237,8 @@ export function AccountSettings({ profile, onUpdate, isLoading }: AccountSetting
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-black/30 rounded-lg">
             <div>
-              <p className="text-white font-medium">Two-Factor Authentication</p>
-              <p className="text-sm text-slate-400">
+              <p className="text-foreground font-medium">Two-Factor Authentication</p>
+              <p className="text-sm text-muted-foreground">
                 Add an extra layer of security to your account
               </p>
             </div>
@@ -261,15 +261,15 @@ export function AccountSettings({ profile, onUpdate, isLoading }: AccountSetting
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-green-500/20">
                   <Smartphone className="h-4 w-4 text-blue-400" />
-                  <span className="text-sm text-white">SMS</span>
+                  <span className="text-sm text-foreground">SMS</span>
                 </div>
                 <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-green-500/20">
                   <Mail className="h-4 w-4 text-green-400" />
-                  <span className="text-sm text-white">Email</span>
+                  <span className="text-sm text-foreground">Email</span>
                 </div>
                 <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-green-500/20">
                   <Camera className="h-4 w-4 text-purple-400" />
-                  <span className="text-sm text-white">Authenticator</span>
+                  <span className="text-sm text-foreground">Authenticator</span>
                 </div>
               </div>
             </div>
