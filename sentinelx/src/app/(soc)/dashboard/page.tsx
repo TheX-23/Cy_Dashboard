@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
   // Route protection
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('auth_token');
     if (!token) {
       window.location.href = '/login';
     }
@@ -115,48 +115,48 @@ export default function DashboardPage() {
     systemHealth: systemHealth?.metrics
       ? Math.round(100 - (systemHealth.metrics.cpu_usage + systemHealth.metrics.memory_usage) / 4)
       : systemHealth
-      ? Math.round(100 - (systemHealth.cpu_usage + systemHealth.memory_usage) / 4)
-      : 98.5,
+        ? Math.round(100 - (systemHealth.cpu_usage + systemHealth.memory_usage) / 4)
+        : 98.5,
     rps: systemHealth?.active_connections ?? 15420
   };
 
   const chartTrendData = trends && trends.length > 0
     ? trends.map(t => ({
-        time: new Date(t.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-        threats: t.critical + t.high + t.medium + t.low,
-        mitigated: Math.floor((t.critical + t.high + t.medium + t.low) * 0.85)
-      }))
+      time: new Date(t.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      threats: t.critical + t.high + t.medium + t.low,
+      mitigated: Math.floor((t.critical + t.high + t.medium + t.low) * 0.85)
+    }))
     : mockTrendData;
 
   const distributionData = stats
     ? [
-        { name: 'Critical', value: stats.critical_alerts, color: '#ef4444' },
-        { name: 'High', value: stats.high_alerts, color: '#f97316' },
-        { name: 'Medium', value: stats.medium_alerts, color: '#eab308' },
-        { name: 'Low', value: stats.low_alerts, color: '#22c55e' },
-      ]
+      { name: 'Critical', value: stats.critical_alerts, color: '#ef4444' },
+      { name: 'High', value: stats.high_alerts, color: '#f97316' },
+      { name: 'Medium', value: stats.medium_alerts, color: '#eab308' },
+      { name: 'Low', value: stats.low_alerts, color: '#22c55e' },
+    ]
     : mockThreatData;
 
   const alertsData = recentAlerts && recentAlerts.length > 0
     ? recentAlerts.map((a: any) => ({
-        id: a.id,
-        type: a.title,
-        severity: a.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
-        source: a.source_ip || 'Internal',
-        time: new Date(a.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-      }))
+      id: a.id,
+      type: a.title,
+      severity: a.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
+      source: a.source_ip || 'Internal',
+      time: new Date(a.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+    }))
     : mockAlerts;
 
   const incidentsData = activityFeed && activityFeed.length > 0
     ? activityFeed
-        .filter((act: any) => act.type === 'incident')
-        .map((act: any) => ({
-          id: act.id,
-          title: act.title,
-          status: act.status as 'active' | 'investigating' | 'contained' | 'resolved',
-          severity: act.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
-          time: new Date(act.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-        }))
+      .filter((act: any) => act.type === 'incident')
+      .map((act: any) => ({
+        id: act.id,
+        title: act.title,
+        status: act.status as 'active' | 'investigating' | 'contained' | 'resolved',
+        severity: act.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low',
+        time: new Date(act.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      }))
     : mockIncidents;
 
   const healthData = {
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             <h1 className="mb-2 text-2xl font-bold text-foreground">SOC Dashboard</h1>
             <p className="text-muted-foreground">Real-time threat monitoring and analysis</p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <HeaderThreatToggle
               isOpen={isNewsPanelOpen}
@@ -220,16 +220,14 @@ export default function DashboardPage() {
               hasNotifications={true}
               isMobile={false}
             />
-            
+
             {/* Connection Status */}
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${
-              isConnected 
-                ? 'bg-green-500/10 text-green-400 border-green-500/30' 
-                : 'bg-red-500/10 text-red-400 border-red-500/30'
-            }`}>
-              <div className={`w-2 h-2 rounded-full ${
-                isConnected ? 'bg-green-400' : 'bg-red-400'
-              }`} />
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${isConnected
+              ? 'bg-green-500/10 text-green-400 border-green-500/30'
+              : 'bg-red-500/10 text-red-400 border-red-500/30'
+              }`}>
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'
+                }`} />
               <span className="text-sm font-medium hidden sm:inline">
                 {isConnected ? 'Connected' : 'Disconnected'}
               </span>
@@ -237,7 +235,7 @@ export default function DashboardPage() {
                 {isConnected ? '🟢' : '🔴'}
               </span>
             </div>
-            
+
             {/* Refresh Button */}
             <button
               type="button"
@@ -247,7 +245,7 @@ export default function DashboardPage() {
               <RefreshCw className="w-4 h-4" />
               <span className="hidden md:inline">Refresh</span>
             </button>
-            
+
             {/* Mobile Refresh Icon */}
             <button
               type="button"
@@ -258,7 +256,7 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
-        
+
         {/* Last Update */}
         <LastUpdatedTicker date={lastUpdate} mounted={mounted} />
       </motion.div>
@@ -364,7 +362,6 @@ export default function DashboardPage() {
         <h3 className="mb-4 text-lg font-semibold text-foreground">System Health</h3>
         <SystemHealth data={healthData} layout="wide" />
       </motion.div>
-
       {/* Bottom Section - Incidents */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

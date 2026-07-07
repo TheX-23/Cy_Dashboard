@@ -27,6 +27,16 @@ logger = logging.getLogger(__name__)
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+# Seed database on startup
+try:
+    from app.models.database import SessionLocal
+    from app.core.seeder import seed_database
+    db_session = SessionLocal()
+    seed_database(db_session)
+    db_session.close()
+except Exception as seed_err:
+    logger.error(f"Error seeding database on startup: {seed_err}")
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
@@ -110,34 +120,7 @@ app.add_middleware(
 # Include API routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-# Add simple auth endpoints for development
-@app.get("/api/v1/auth/test")
-async def test_auth():
-    """Test authentication endpoint"""
-    return {"message": "Auth API is working", "status": "ok"}
-
-@app.post("/api/v1/auth/login")
-async def login(user_credentials: dict):
-    """Simple login endpoint for development"""
-    if user_credentials.get("email") == "admin@sentinelx.com" and user_credentials.get("password") == "admin123":
-        return {
-            "access_token": "dev_token_12345",
-            "token_type": "bearer",
-            "expires_in": 1800,
-            "user": {
-                "id": "12345",
-                "email": "admin@sentinelx.com",
-                "name": "System Administrator",
-                "role": "admin",
-                "is_active": True
-            }
-        }
-    else:
-        from fastapi import HTTPException, status
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password"
-        )
+# Redundant development auth endpoints removed (now handled by app/api/v1/auth.py)
 
 # WebSocket connection manager
 class ConnectionManager:
@@ -173,7 +156,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str = None):
     if token:
         try:
             from app.services.auth_service import auth_service
-            payload = await auth_service.verify_token(token)
+            payload = auth_service.verify_token(token)
             if not payload:
                 await websocket.close(code=1008, reason="Invalid token")
                 return

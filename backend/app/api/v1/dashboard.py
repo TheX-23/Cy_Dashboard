@@ -1,7 +1,7 @@
 from typing import List, Optional, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func, desc, and_, or_
+from sqlalchemy import func, desc, and_, or_, case, text
 from app.models.database import get_db
 from app.models.alert import Alert, AlertSeverity, AlertStatus
 from app.models.incident import Incident, IncidentStatus
@@ -130,34 +130,51 @@ async def get_alert_trends(
     try:
         start_date = datetime.utcnow() - timedelta(days=days)
         
-        # Build query
-        query = db.execute(
-            f"""
-            SELECT 
-                DATE(created_at) as date,
-                SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END) as critical,
-                SUM(CASE WHEN severity = 'high' THEN 1 ELSE 0 END) as high,
-                SUM(CASE WHEN severity = 'medium' THEN 1 ELSE 0 END) as medium,
-                SUM(CASE WHEN severity = 'low' THEN 1 ELSE 0 END) as low
-            FROM alerts 
-            WHERE created_at >= %s
-            AND (%s = true OR assigned_to = %s OR assigned_to IS NULL)
-            GROUP BY DATE(created_at)
-            ORDER BY date ASC
-            """,
-            (start_date, get_permissions(current_user).get("manage_users", False), current_user.id)
-        ).fetchall()
+        # Group by date using SQLAlchemy (works for SQLite & Postgres)
+        date_func = func.date(Alert.created_at)
         
-        trends = [
-            AlertTrend(
-                date=row[0].isoformat(),
-                critical=row[1] or 0,
-                high=row[2] or 0,
-                medium=row[3] or 0,
-                low=row[4] or 0
+        # Build base filter
+        query_filter = [Alert.created_at >= start_date]
+        
+        # Apply user filter for non-admin users
+        permissions = get_permissions(current_user)
+        if not permissions.get("manage_users", False):
+            query_filter.append(
+                or_(
+                    Alert.assigned_to == current_user.id,
+                    Alert.assigned_to.is_(None)
+                )
             )
-            for row in query
-        ]
+            
+        trend_query = db.query(
+            date_func.label("date"),
+            func.sum(case((Alert.severity == 'critical', 1), else_=0)).label("critical"),
+            func.sum(case((Alert.severity == 'high', 1), else_=0)).label("high"),
+            func.sum(case((Alert.severity == 'medium', 1), else_=0)).label("medium"),
+            func.sum(case((Alert.severity == 'low', 1), else_=0)).label("low")
+        ).filter(
+            and_(*query_filter)
+        ).group_by(
+            date_func
+        ).order_by(
+            date_func.asc()
+        ).all()
+        
+        trends = []
+        for row in trend_query:
+            date_val = row.date
+            if date_val is None:
+                continue
+            date_str = date_val.isoformat() if hasattr(date_val, "isoformat") else str(date_val)
+            trends.append(
+                AlertTrend(
+                    date=date_str,
+                    critical=row.critical or 0,
+                    high=row.high or 0,
+                    medium=row.medium or 0,
+                    low=row.low or 0
+                )
+            )
         
         return trends
     
@@ -177,7 +194,7 @@ async def get_threat_map(
     try:
         # Get threat data grouped by country
         query = db.execute(
-            """
+            text("""
             SELECT 
                 COALESCE(country_from, 'Unknown') as country,
                 COUNT(*) as threats,
@@ -193,7 +210,7 @@ async def get_threat_map(
             GROUP BY country_from
             ORDER BY threats DESC
             LIMIT 50
-            """
+            """)
         ).fetchall()
         
         threat_map = [
@@ -271,29 +288,27 @@ async def get_top_threats(
 ):
     """Get top threat types"""
     try:
-        # Get top threat types from detections
-        query = db.execute(
-            """
-            SELECT 
-                threat_type,
-                COUNT(*) as count,
-                AVG(risk_score) as avg_risk_score
-            FROM detections 
-            WHERE created_at >= NOW() - INTERVAL '7 days'
-            GROUP BY threat_type
-            ORDER BY count DESC
-            LIMIT %s
-            """,
-            (limit,)
-        ).fetchall()
+        start_date = datetime.utcnow() - timedelta(days=7)
+        # Get top threat types from detections using SQLAlchemy
+        threat_query = db.query(
+            Detection.threat_type,
+            func.count(Detection.id).label("count"),
+            func.avg(Detection.risk_score).label("avg_risk_score")
+        ).filter(
+            Detection.created_at >= start_date
+        ).group_by(
+            Detection.threat_type
+        ).order_by(
+            desc("count")
+        ).limit(limit).all()
         
         top_threats = [
             {
                 "threat_type": row[0],
                 "count": row[1],
-                "avg_risk_score": round(row[2], 1)
+                "avg_risk_score": round(row[2], 1) if row[2] is not None else 0.0
             }
-            for row in query
+            for row in threat_query
         ]
         
         return top_threats

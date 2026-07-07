@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Shield, Clock, Smartphone, Monitor, Plus, Trash2, Save, X, Globe, Lock } from 'lucide-react';
-import { SecuritySettings } from '@/types/settings';
+import type { SecuritySettings } from '@/types/settings';
 import { cn } from '@/lib/utils/cn';
 
 interface SecuritySettingsProps {

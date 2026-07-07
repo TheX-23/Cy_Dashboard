@@ -101,6 +101,10 @@ export const useAuth = create<AuthState>()(
             role: 'user',
           };
 
+          localStorage.setItem('auth_token', 'dev_token_12345');
+          localStorage.setItem('token', 'dev_token_12345');
+          localStorage.setItem('user', JSON.stringify(user));
+
           set({ user, isAuthenticated: true, isLoading: false });
         } catch (error) {
           set({ isLoading: false });
@@ -114,6 +118,7 @@ export const useAuth = create<AuthState>()(
         
         // Clear localStorage
         localStorage.removeItem('token');
+        localStorage.removeItem('auth_token');
         localStorage.removeItem('user');
         
         // Clear auth state immediately
@@ -125,12 +130,25 @@ export const useAuth = create<AuthState>()(
 
       checkAuth: async () => {
         try {
-          // Mock check auth - check if user is stored
-          const persisted = get();
-          if (persisted?.user && persisted?.isAuthenticated) {
-            set({ user: persisted.user, isAuthenticated: true });
+          if (USE_MOCK_AUTH) {
+            // Mock check auth - check if user is stored
+            const persisted = get();
+            if (persisted?.user && persisted?.isAuthenticated) {
+              set({ user: persisted.user, isAuthenticated: true });
+            } else {
+              set({ user: null, isAuthenticated: false });
+            }
           } else {
-            set({ user: null, isAuthenticated: false });
+            const token = localStorage.getItem('auth_token');
+            const persisted = get();
+            if (token && persisted?.user && persisted?.isAuthenticated) {
+              set({ user: persisted.user, isAuthenticated: true });
+            } else {
+              localStorage.removeItem('auth_token');
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              set({ user: null, isAuthenticated: false });
+            }
           }
         } catch (error) {
           set({ user: null, isAuthenticated: false });

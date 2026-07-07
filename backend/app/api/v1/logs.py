@@ -1,7 +1,7 @@
 from typing import List, Optional, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, or_, desc
+from sqlalchemy import and_, or_, desc, func
 from app.models.database import get_db
 from app.models.log import Log
 from app.models.user import User
@@ -189,70 +189,41 @@ async def get_log_stats(
 ):
     """Get log statistics summary"""
     try:
-        # Build base query
-        query = db.query(Log)
-        
-        # Apply date filters
-        if start_date:
-            query = query.filter(Log.timestamp >= start_date)
-        else:
-            # Default to last 24 hours
-            query = query.filter(Log.timestamp >= datetime.utcnow() - timedelta(hours=24))
-        
-        if end_date:
-            query = query.filter(Log.timestamp <= end_date)
-        
-        # Apply user filter for non-admin users
+        # Build base filter
         permissions = get_permissions(current_user)
-        if not permissions.get("manage_users", False):
-            query = query.filter(Log.user_id == current_user.id)
         
-        # Get statistics
-        total_logs = query.count()
+        # Determine start time (default: 24h ago)
+        filter_start = start_date if start_date else (datetime.utcnow() - timedelta(hours=24))
+        
+        # Base query filters
+        filters = []
+        if filter_start:
+            filters.append(Log.timestamp >= filter_start)
+        if end_date:
+            filters.append(Log.timestamp <= end_date)
+        if not permissions.get("manage_users", False):
+            filters.append(Log.user_id == current_user.id)
+
+        # Get total logs
+        total_logs = db.query(Log).filter(*filters).count()
         
         # Get status code distribution
-        status_distribution = db.execute(
-            f"""
-            SELECT status_code, COUNT(*) as count
-            FROM logs 
-            WHERE timestamp >= COALESCE(%s, NOW() - INTERVAL '24 hours')
-            AND timestamp <= COALESCE(%s, NOW())
-            AND (%s = true OR user_id = %s)
-            GROUP BY status_code
-            ORDER BY count DESC
-            """,
-            (start_date, end_date, permissions.get("manage_users", False), current_user.id)
-        ).fetchall()
+        status_distribution = db.query(
+            Log.status_code,
+            func.count(Log.id).label("count")
+        ).filter(*filters).group_by(Log.status_code).order_by(desc("count")).all()
         
         # Get top endpoints
-        top_endpoints = db.execute(
-            f"""
-            SELECT endpoint, COUNT(*) as count
-            FROM logs 
-            WHERE timestamp >= COALESCE(%s, NOW() - INTERVAL '24 hours')
-            AND timestamp <= COALESCE(%s, NOW())
-            AND (%s = true OR user_id = %s)
-            GROUP BY endpoint
-            ORDER BY count DESC
-            LIMIT 10
-            """,
-            (start_date, end_date, permissions.get("manage_users", False), current_user.id)
-        ).fetchall()
+        top_endpoints = db.query(
+            Log.endpoint,
+            func.count(Log.id).label("count")
+        ).filter(*filters).group_by(Log.endpoint).order_by(desc("count")).limit(10).all()
         
         # Get top IP addresses
-        top_ips = db.execute(
-            f"""
-            SELECT ip_address, COUNT(*) as count
-            FROM logs 
-            WHERE timestamp >= COALESCE(%s, NOW() - INTERVAL '24 hours')
-            AND timestamp <= COALESCE(%s, NOW())
-            AND (%s = true OR user_id = %s)
-            GROUP BY ip_address
-            ORDER BY count DESC
-            LIMIT 10
-            """,
-            (start_date, end_date, permissions.get("manage_users", False), current_user.id)
-        ).fetchall()
+        top_ips = db.query(
+            Log.ip_address,
+            func.count(Log.id).label("count")
+        ).filter(*filters).group_by(Log.ip_address).order_by(desc("count")).limit(10).all()
         
         return {
             "total_logs": total_logs,
@@ -284,25 +255,40 @@ async def get_log_timeline(
     """Get log timeline data for the specified hours"""
     try:
         start_time = datetime.utcnow() - timedelta(hours=hours)
+        permissions = get_permissions(current_user)
         
-        # Build query
-        query = db.execute(
-            f"""
-            SELECT 
-                DATE_TRUNC('hour', timestamp) as hour,
-                COUNT(*) as count
-            FROM logs 
-            WHERE timestamp >= %s
-            AND (%s = true OR user_id = %s)
-            GROUP BY DATE_TRUNC('hour', timestamp)
-            ORDER BY hour ASC
-            """,
-            (start_time, get_permissions(current_user).get("manage_users", False), current_user.id)
-        ).fetchall()
+        # Base query filters
+        filters = [Log.timestamp >= start_time]
+        if not permissions.get("manage_users", False):
+            filters.append(Log.user_id == current_user.id)
+            
+        # Determine database dialect
+        is_sqlite = db.bind.dialect.name == "sqlite"
+        if is_sqlite:
+            # SQLite strftime
+            hour_col = func.strftime('%Y-%m-%d %H:00:00', Log.timestamp).label("hour")
+        else:
+            # PostgreSQL date_trunc
+            hour_col = func.date_trunc('hour', Log.timestamp).label("hour")
+            
+        query = db.query(
+            hour_col,
+            func.count(Log.id).label("count")
+        ).filter(*filters).group_by(hour_col).order_by(hour_col.asc())
         
-        timeline = [
-            {"hour": row[0].isoformat(), "count": row[1]} for row in query
-        ]
+        timeline_query = query.all()
+        
+        timeline = []
+        for row in timeline_query:
+            hour_val = row[0]
+            if hour_val is None:
+                continue
+            # If it's datetime object (PG), ISO format it. If it's string (SQLite), return directly.
+            hour_str = hour_val.isoformat() if hasattr(hour_val, "isoformat") else str(hour_val)
+            timeline.append({
+                "hour": hour_str,
+                "count": row[1]
+            })
         
         return {"timeline": timeline}
     

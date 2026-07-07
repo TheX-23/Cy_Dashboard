@@ -51,3 +51,5 @@ env/
 # SentinelX Specific
 sentinelx/.next/
 sentinelx/node_modules/
+*.db
+

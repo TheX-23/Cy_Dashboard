@@ -219,7 +219,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       desktop: e.target.checked,
                       sound: prev.notifications?.sound ?? preferences.notifications.sound,
                       email: prev.notifications?.email ?? preferences.notifications.email,
-                    }
+                    } as UserPreferences['notifications']
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -238,7 +238,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       desktop: prev.notifications?.desktop ?? preferences.notifications.desktop,
                       sound: e.target.checked,
                       email: prev.notifications?.email ?? preferences.notifications.email,
-                    }
+                    } as UserPreferences['notifications']
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -257,7 +257,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       desktop: prev.notifications?.desktop ?? preferences.notifications.desktop,
                       sound: prev.notifications?.sound ?? preferences.notifications.sound,
                       email: e.target.checked,
-                    }
+                    } as UserPreferences['notifications']
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -320,7 +320,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       defaultTab: e.target.value,
                       refreshInterval: prev.dashboard?.refreshInterval ?? preferences.dashboard.refreshInterval,
                       compactMode: prev.dashboard?.compactMode ?? preferences.dashboard.compactMode,
-                    }
+                    } as UserPreferences['dashboard']
                   }))}
                   className="w-full px-3 py-2 bg-black/50 border border-green-500/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
                 >
@@ -342,7 +342,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       defaultTab: prev.dashboard?.defaultTab ?? preferences.dashboard.defaultTab,
                       refreshInterval: parseInt(e.target.value) || 30,
                       compactMode: prev.dashboard?.compactMode ?? preferences.dashboard.compactMode,
-                    }
+                    } as UserPreferences['dashboard']
                   }))}
                   min="10"
                   max="300"
@@ -365,7 +365,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                     defaultTab: prev.dashboard?.defaultTab ?? preferences.dashboard.defaultTab,
                     refreshInterval: prev.dashboard?.refreshInterval ?? preferences.dashboard.refreshInterval,
                     compactMode: e.target.checked,
-                  }
+                  } as UserPreferences['dashboard']
                 }))}
                 className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
               />
@@ -409,7 +409,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       highContrast: prev.accessibility?.highContrast ?? preferences.accessibility.highContrast,
                       reducedMotion: prev.accessibility?.reducedMotion ?? preferences.accessibility.reducedMotion,
                       fontSize: e.target.value as 'small' | 'medium' | 'large',
-                    }
+                    } as UserPreferences['accessibility']
                   }))}
                   className="w-full px-3 py-2 bg-black/50 border border-green-500/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50"
                 >
@@ -435,7 +435,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       highContrast: e.target.checked,
                       reducedMotion: prev.accessibility?.reducedMotion ?? preferences.accessibility.reducedMotion,
                       fontSize: prev.accessibility?.fontSize ?? preferences.accessibility.fontSize,
-                    }
+                    } as UserPreferences['accessibility']
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />
@@ -454,7 +454,7 @@ export function Preferences({ preferences, onUpdate, isLoading }: PreferencesPro
                       highContrast: prev.accessibility?.highContrast ?? preferences.accessibility.highContrast,
                       reducedMotion: e.target.checked,
                       fontSize: prev.accessibility?.fontSize ?? preferences.accessibility.fontSize,
-                    }
+                    } as UserPreferences['accessibility']
                   }))}
                   className="w-4 h-4 text-green-400 bg-black/50 border border-green-500/30 rounded focus:ring-2 focus:ring-green-500/50"
                 />

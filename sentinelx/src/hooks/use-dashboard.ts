@@ -140,14 +140,14 @@ export function useDashboard() {
             activityData,
             recentAlertsData,
             healthData,
-          ] = await Promise.all([
+          ] = (await Promise.all([
             apiClient.getDashboardStats(),
             apiClient.getAlertTrends(7),
             apiClient.getThreatMap(),
             apiClient.getActivityFeed(20),
             apiClient.getRecentAlerts(10),
             apiClient.getSystemHealth(),
-          ]);
+          ])) as [DashboardStats, AlertTrend[], ThreatMap[], ActivityFeed[], any[], any];
 
           setStats(statsData);
           setTrends(trendsData);
@@ -177,9 +177,9 @@ export function useDashboard() {
         setSystemHealth(data);
       } else if (type === 'alerts:update' || type === 'incidents:update' || type === 'detections:update') {
         // Refresh dynamic metrics and lists
-        apiClient.getDashboardStats().then(setStats).catch(console.error);
-        apiClient.getRecentAlerts(10).then(setRecentAlerts).catch(console.error);
-        apiClient.getActivityFeed(20).then(setActivityFeed).catch(console.error);
+        apiClient.getDashboardStats().then(data => setStats(data as DashboardStats)).catch(console.error);
+        apiClient.getRecentAlerts(10).then(data => setRecentAlerts(data as any[])).catch(console.error);
+        apiClient.getActivityFeed(20).then(data => setActivityFeed(data as ActivityFeed[])).catch(console.error);
       }
     } catch (err) {
       console.error('Error handling WebSocket message:', err);
@@ -192,11 +192,11 @@ export function useDashboard() {
 
     const interval = setInterval(async () => {
       try {
-        const [statsData, healthData, recentAlertsData] = await Promise.all([
+        const [statsData, healthData, recentAlertsData] = (await Promise.all([
           apiClient.getDashboardStats(),
           apiClient.getSystemHealth(),
           apiClient.getRecentAlerts(10)
-        ]);
+        ])) as [DashboardStats, any, any[]];
         setStats(statsData);
         setSystemHealth(healthData);
         setRecentAlerts(recentAlertsData);
@@ -229,14 +229,14 @@ export function useDashboard() {
           activityData,
           recentAlertsData,
           healthData,
-        ] = await Promise.all([
+        ] = (await Promise.all([
           apiClient.getDashboardStats(),
           apiClient.getAlertTrends(7),
           apiClient.getThreatMap(),
           apiClient.getActivityFeed(20),
           apiClient.getRecentAlerts(10),
           apiClient.getSystemHealth(),
-        ]);
+        ])) as [DashboardStats, AlertTrend[], ThreatMap[], ActivityFeed[], any[], any];
         setStats(statsData);
         setTrends(trendsData);
         setThreatMap(threatMapData);

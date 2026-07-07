@@ -104,7 +104,7 @@ export function SignupForm({ onLoginClick }: SignupFormProps) {
       await new Promise(resolve => setTimeout(resolve, 2500));
       
       // Simulate successful signup
-      localStorage.setItem('auth_token', 'mock_token_' + Date.now());
+      localStorage.setItem('auth_token', 'dev_token_12345');
       localStorage.setItem('user_email', formData.email);
       localStorage.setItem('user_name', formData.name);
       

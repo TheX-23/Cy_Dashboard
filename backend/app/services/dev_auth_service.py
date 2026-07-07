@@ -1,15 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from app.core.config import settings
 import uuid
 import logging
 
 logger = logging.getLogger(__name__)
-
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class DevAuthService:
     """Development authentication service that works without database"""
@@ -20,12 +17,20 @@ class DevAuthService:
         self.access_token_expire_minutes = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        """Verify password against hash"""
-        return pwd_context.verify(plain_password, hashed_password)
+        """Verify password against hash using bcrypt"""
+        try:
+            return bcrypt.checkpw(
+                plain_password.encode("utf-8"),
+                hashed_password.encode("utf-8")
+            )
+        except Exception as e:
+            logger.error(f"Password verification error: {e}")
+            return False
 
     def get_password_hash(self, password: str) -> str:
-        """Generate password hash"""
-        return pwd_context.hash(password)
+        """Generate password hash using bcrypt"""
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT access token"""
@@ -59,7 +64,7 @@ class DevAuthService:
         if email == ADMIN_EMAIL and self.verify_password(password, ADMIN_PASSWORD_HASH):
             logger.info(f"Development auth successful for: {email}")
             return {
-                "id": uuid.uuid4(),
+                "id": uuid.UUID("00000000-0000-0000-0000-000000000001"),
                 "email": email,
                 "name": "System Administrator",
                 "role": "admin",
