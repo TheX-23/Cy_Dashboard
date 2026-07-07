@@ -167,7 +167,18 @@ export function useDetectionRealtime() {
     setConnectionStatus('connecting');
     
     // Connect to threats WebSocket
-    const wsBase = (process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8080/ws').replace(/\/ws\/?$/, '');
+    const getWsBase = () => {
+      if (typeof window === "undefined") {
+        return (process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws').replace(/\/ws\/?$/, '');
+      }
+      if (process.env.NEXT_PUBLIC_WS_URL) {
+        return process.env.NEXT_PUBLIC_WS_URL.replace(/\/ws\/?$/, '');
+      }
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const hostname = window.location.hostname;
+      return `${protocol}//${hostname}:8080`;
+    };
+    const wsBase = getWsBase();
     const threatsWS = connectWebSocket(`${wsBase}/ws/threats`, handleThreatMessage);
     if (threatsWS) {
       threatsWSRef.current = threatsWS;

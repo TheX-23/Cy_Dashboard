@@ -1,6 +1,20 @@
 // Same-origin default: proxied by Next rewrites to the FastAPI backend (avoids CORS in dev).
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8080/ws";
+
+const getWsUrl = (): string => {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws";
+  }
+  if (process.env.NEXT_PUBLIC_WS_URL) {
+    return process.env.NEXT_PUBLIC_WS_URL;
+  }
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const hostname = window.location.hostname;
+  return `${protocol}//${hostname}:8080/ws`;
+};
+
+const WS_URL = getWsUrl();
+
 
 interface ApiResponse<T = any> {
   data?: T;

@@ -1,9 +1,30 @@
-// Detection service (root paths like /rules); not the same as NEXT_PUBLIC_API_URL /api/v1 proxy.
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_DETECTION_API_URL || "http://127.0.0.1:8080";
-const WS_BASE_URL = (
-  process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8080/ws"
-).replace(/\/ws\/?$/, "") || "ws://127.0.0.1:8080";
+const getApiBaseUrl = (): string => {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_DETECTION_API_URL || "http://localhost:8080";
+  }
+  if (process.env.NEXT_PUBLIC_DETECTION_API_URL) {
+    return process.env.NEXT_PUBLIC_DETECTION_API_URL;
+  }
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  return `${protocol}//${hostname}:8080`;
+};
+
+const getWsBaseUrl = (): string => {
+  if (typeof window === "undefined") {
+    return (process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws").replace(/\/ws\/?$/, "");
+  }
+  if (process.env.NEXT_PUBLIC_WS_URL) {
+    return process.env.NEXT_PUBLIC_WS_URL.replace(/\/ws\/?$/, "");
+  }
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const hostname = window.location.hostname;
+  return `${protocol}//${hostname}:8080`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
+const WS_BASE_URL = getWsBaseUrl();
+
 
 export interface DetectionAPI {
   // WebSocket connections
